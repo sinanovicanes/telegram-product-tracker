@@ -15,8 +15,8 @@ export class CommandLoader {
 
       try {
         file = await import(filePath);
-      } catch {
-        this.logger.error(`Failed to load file: ${filePath}`);
+      } catch (e) {
+        this.logger.error(`Failed to load ${filePath}: ${e}`);
         continue;
       }
 

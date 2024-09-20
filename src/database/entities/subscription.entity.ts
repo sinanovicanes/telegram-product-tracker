@@ -5,21 +5,22 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  type Relation
 } from "typeorm";
 import { Item } from "./item.entity";
 import { User } from "./user.entity";
 
 @Entity()
-export class Subcription extends BaseEntity {
+export class Subscription extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => Item)
-  item: Item;
+  item: Relation<Item>;
 
   @ManyToOne(() => User)
-  user: User;
+  user: Relation<User>;
 
   @Column({ type: "jsonb" })
   metadata: Record<string, any>;

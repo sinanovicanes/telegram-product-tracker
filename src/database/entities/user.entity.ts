@@ -5,9 +5,10 @@ import {
   Entity,
   OneToMany,
   PrimaryColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  type Relation
 } from "typeorm";
-import { Subcription } from "./subcription.entity";
+import { Subscription } from "./subscription.entity";
 
 export enum USER_ROLE {
   ADMIN = "admin",
@@ -28,6 +29,6 @@ export class User extends BaseEntity {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => Subcription, subcription => subcription.user)
-  subcriptions: Subcription[];
+  @OneToMany(() => Subscription, subcription => subcription.user)
+  subcriptions: Relation<Subscription[]>;
 }

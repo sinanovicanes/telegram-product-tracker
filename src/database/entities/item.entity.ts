@@ -5,9 +5,10 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  type Relation
 } from "typeorm";
-import { Subcription } from "./subcription.entity";
+import { Subscription } from "./subscription.entity";
 
 @Entity()
 export class Item extends BaseEntity {
@@ -17,7 +18,7 @@ export class Item extends BaseEntity {
   @Column({ unique: true })
   url: string;
 
-  @Column({ type: "timestamp", name: "last_control" })
+  @Column({ type: "timestamp", name: "last_control", default: () => "CURRENT_TIMESTAMP" })
   lastControl: Date;
 
   @Column({ type: "jsonb" })
@@ -29,6 +30,6 @@ export class Item extends BaseEntity {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => Subcription, subcription => subcription.user)
-  subcriptions: Subcription[];
+  @OneToMany(() => Subscription, subcription => subcription.item)
+  subscribers: Relation<Subscription[]>;
 }
