@@ -2,6 +2,7 @@ import { z } from "zod";
 
 declare module "bun" {
   interface Env {
+<<<<<<< HEAD
     TELEGRAM_BOT_TOKEN: string;
     DATABASE_HOST: string;
     DATABASE_USER: string;
@@ -9,6 +10,10 @@ declare module "bun" {
     DATABASE_NAME: string;
     DATABASE_PORT: number;
     DATABASE_URL: string;
+=======
+    AWESOME: string;
+    TELEGRAM_BOT_TOKEN: string;
+>>>>>>> f22edf2 (Initial commit)
   }
 }
 
@@ -21,6 +26,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum([ENVIRONMENT.DEVELOPMENT, ENVIRONMENT.PRODUCTION])
     .default(ENVIRONMENT.DEVELOPMENT),
+<<<<<<< HEAD
   TELEGRAM_BOT_TOKEN: z.string(),
   DATABASE_HOST: z.string(),
   DATABASE_USER: z.string(),
@@ -28,6 +34,10 @@ const envSchema = z.object({
   DATABASE_NAME: z.string(),
   DATABASE_PORT: z.number({ coerce: true }),
   DATABASE_URL: z.string()
+=======
+  AWESOME: z.string().default("awesome"),
+  TELEGRAM_BOT_TOKEN: z.string()
+>>>>>>> f22edf2 (Initial commit)
 });
 
 export const env = envSchema.parse(process.env);

@@ -9,7 +9,11 @@ export class StartCommand extends Command {
     });
   }
 
+<<<<<<< HEAD
   async handler(ctx: Context) {
     console.log(ctx.message.from);
   }
+=======
+  async handler(ctx: Context) {}
+>>>>>>> f22edf2 (Initial commit)
 }
