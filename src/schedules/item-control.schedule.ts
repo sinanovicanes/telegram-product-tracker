@@ -31,11 +31,19 @@ export class ItemControlSchedule extends Schedule {
         continue;
       }
 
-      const differences: string[] = [];
+      const differences: string[] = ["sizes"];
 
       // Compare the item data with the metadata
       for (const key in itemData) {
-        if (typeof itemData[key as keyof typeof itemData] === "object") {
+        const type = typeof itemData[key as keyof typeof itemData];
+        const type2 = typeof item.metadata[key];
+
+        if (type != type2) {
+          differences.push(key);
+          continue;
+        }
+
+        if (type === "object") {
           if (!isEqualObjects(itemData[key], item.metadata[key])) {
             differences.push(key);
           }
@@ -52,12 +60,25 @@ export class ItemControlSchedule extends Schedule {
         continue;
       }
 
-      // Update the item metadata
-      item.metadata = itemData;
-      await item.save();
-
       const changesString = differences.reduce((acc, curr) => {
         if (typeof itemData[curr] === "object") {
+          if (curr === "sizes") {
+            const oldSizes: string[] = item.metadata[curr];
+            const newSizes: string[] = itemData[curr];
+            const addedSizes = newSizes.filter(size => !oldSizes.includes(size));
+            const removedSizes = oldSizes.filter(size => !newSizes.includes(size));
+
+            acc = addedSizes.reduce((acc, size) => {
+              return `${acc}\nSize ${size} -> ✅`;
+            }, acc);
+
+            acc = removedSizes.reduce((acc, size) => {
+              return `${acc}\nSize ${size} -> ❌`;
+            }, acc);
+
+            return acc;
+          }
+
           return `${acc}\n${capitalize(curr)}`;
         }
 
@@ -65,6 +86,10 @@ export class ItemControlSchedule extends Schedule {
       }, "");
 
       const text = `${itemData.name} has been updated. The following fields have changed:\n${changesString}\n\n${item.url}`;
+
+      // Update the item metadata
+      item.metadata = itemData;
+      await item.save();
 
       // Notify the subscribers
       for (const subscriber of item.subscribers) {
