@@ -23,12 +23,17 @@ export class ScheduleLoader {
       try {
         file = await import(filePath);
 <<<<<<< HEAD
+<<<<<<< HEAD
       } catch (e) {
         this.logger.error(`Failed to load ${filePath}: ${e}`);
 =======
       } catch {
         this.logger.error(`Failed to load file: ${filePath}`);
 >>>>>>> 52a77c9 (feat: Schedules)
+=======
+      } catch (e) {
+        this.logger.error(`Failed to load file ${filePath}: ${e}`);
+>>>>>>> a630d27 (feat: Add guards)
         continue;
       }
 

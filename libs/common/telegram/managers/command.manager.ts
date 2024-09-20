@@ -5,8 +5,11 @@ import { CommandLoader } from "../loaders";
 <<<<<<< HEAD
 import { Injectable } from "@app/common/decorators";
 import type { TelegramClient } from "../client";
+import { BaseManager } from "./base.manager";
+import { GuardError } from "@app/common/errors";
 
 @Injectable()
+<<<<<<< HEAD
 export class CommandManager {
   constructor() {}
 =======
@@ -25,6 +28,9 @@ export class CommandManager {
 >>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
 
   private readonly logger = new Logger(CommandManager.name);
+=======
+export class CommandManager extends BaseManager {
+>>>>>>> a630d27 (feat: Add guards)
   private readonly commands: Map<Command["name"], Command> = new Map();
 
 <<<<<<< HEAD
@@ -46,8 +52,12 @@ export class CommandManager {
     client.command(command.name, async ctx => {
 >>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
       try {
+        await this.runExecutors(command as Function & Command, ctx);
         await command.handler(ctx);
       } catch (e) {
+        if (e instanceof GuardError) {
+          return;
+        }
         this.logger.error(`Failed to execute command ${command.name}: ${e}`);
       }
     });

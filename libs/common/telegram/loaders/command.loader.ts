@@ -23,12 +23,17 @@ export class CommandLoader {
       try {
         file = await import(filePath);
 <<<<<<< HEAD
+<<<<<<< HEAD
       } catch (e) {
         this.logger.error(`Failed to load ${filePath}: ${e}`);
 =======
       } catch {
         this.logger.error(`Failed to load file: ${filePath}`);
 >>>>>>> f22edf2 (Initial commit)
+=======
+      } catch (e) {
+        this.logger.error(`Failed to load ${filePath}: ${e}`);
+>>>>>>> a630d27 (feat: Add guards)
         continue;
       }
 
