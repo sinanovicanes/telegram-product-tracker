@@ -1,4 +1,4 @@
-import type { USER_ROLE } from "@/database/entities";
+import { USER_ROLE } from "@/database/entities";
 import { UserService } from "@/services";
 import { ROLES_METADATA_KEY } from "@app/common/constants";
 import { Injectable } from "@app/common/decorators";
@@ -25,7 +25,7 @@ export class AuthGuard extends Guard {
     );
 
     if (roles) {
-      if (!roles.includes(user.role)) {
+      if (user.role != USER_ROLE.ADMIN && !roles.includes(user.role)) {
         return false;
       }
     }

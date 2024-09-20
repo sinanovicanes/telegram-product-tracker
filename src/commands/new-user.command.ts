@@ -1,11 +1,12 @@
 import { USER_ROLE } from "@/database/entities";
 import { UserService } from "@/services";
-import { Injectable } from "@app/common/decorators";
+import { Injectable, Roles } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
 import type { Context } from "telegraf";
 
 @Injectable()
+@Roles(USER_ROLE.ADMIN)
 export class NewUserCommand extends Command {
   constructor(private readonly userService: UserService) {
     super({
