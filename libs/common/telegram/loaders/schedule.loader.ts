@@ -2,9 +2,13 @@ import { Logger } from "@app/common";
 import { Glob } from "bun";
 import { Schedule } from "../classes";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { container } from "tsyringe";
 =======
 >>>>>>> 52a77c9 (feat: Schedules)
+=======
+import { container } from "tsyringe";
+>>>>>>> f719c3e (refactor: Update loaders to resolve instances from container)
 
 export class ScheduleLoader {
   private static readonly logger = new Logger(ScheduleLoader.name);
@@ -32,10 +36,14 @@ export class ScheduleLoader {
         if (file[key].prototype instanceof Schedule) {
           try {
 <<<<<<< HEAD
+<<<<<<< HEAD
             const schedule = container.resolve<Schedule>(file[key]);
 =======
             const schedule = new file[key]();
 >>>>>>> 52a77c9 (feat: Schedules)
+=======
+            const schedule = container.resolve<Schedule>(file[key]);
+>>>>>>> f719c3e (refactor: Update loaders to resolve instances from container)
 
             schedules.push(schedule);
           } catch (e) {
