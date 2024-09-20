@@ -2,6 +2,7 @@ import { Logger } from "@app/common/logger";
 import { Command } from "../classes";
 import { CommandLoader } from "../loaders";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Injectable } from "@app/common/decorators";
 import type { TelegramClient } from "../client";
 
@@ -9,15 +10,24 @@ import type { TelegramClient } from "../client";
 export class CommandManager {
   constructor() {}
 =======
+=======
+import { Injectable } from "@app/common/decorators";
+>>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
 import type { TelegramClient } from "../client";
 
+@Injectable()
 export class CommandManager {
+<<<<<<< HEAD
   constructor(private readonly client: TelegramClient) {}
 >>>>>>> f22edf2 (Initial commit)
+=======
+  constructor() {}
+>>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
 
   private readonly logger = new Logger(CommandManager.name);
   private readonly commands: Map<Command["name"], Command> = new Map();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   private loadCommand(command: Command, client: TelegramClient) {
     this.commands.set(command.name, command);
@@ -29,6 +39,12 @@ export class CommandManager {
 
     this.client.command(command.name, async ctx => {
 >>>>>>> f22edf2 (Initial commit)
+=======
+  private loadCommand(command: Command, client: TelegramClient) {
+    this.commands.set(command.name, command);
+
+    client.command(command.name, async ctx => {
+>>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
       try {
         await command.handler(ctx);
       } catch (e) {
@@ -37,6 +53,7 @@ export class CommandManager {
     });
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   async initialize(client: TelegramClient) {
     const commands = await CommandLoader.load("src/commands/**/*.ts");
@@ -50,6 +67,13 @@ export class CommandManager {
     for (const command of commands) {
       this.loadCommand(command);
 >>>>>>> f22edf2 (Initial commit)
+=======
+  async initialize(client: TelegramClient) {
+    const commands = await CommandLoader.load("src/commands/**/*.ts");
+
+    for (const command of commands) {
+      this.loadCommand(command, client);
+>>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
     }
 
     this.logger.info(`Loaded ${this.commands.size} commands`);

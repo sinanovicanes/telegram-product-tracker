@@ -8,11 +8,17 @@
     "jsx": "react-jsx",
     "allowJs": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 =======
 >>>>>>> f22edf2 (Initial commit)
+=======
+    
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+>>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
 
     // Bundler mode
     "moduleResolution": "bundler",

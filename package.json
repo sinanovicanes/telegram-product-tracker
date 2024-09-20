@@ -15,6 +15,7 @@
   "dependencies": {
     "chalk": "^5.3.0",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "cheerio": "^1.0.0",
     "class-validator": "^0.14.1",
     "cron": "^3.1.7",
@@ -26,6 +27,11 @@
 =======
     "telegraf": "^4.16.3",
 >>>>>>> f22edf2 (Initial commit)
+=======
+    "reflect-metadata": "^0.2.2",
+    "telegraf": "^4.16.3",
+    "tsyringe": "^4.8.0",
+>>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
     "zod": "^3.23.8"
   }
 }
