@@ -8,6 +8,7 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
   type Relation
+<<<<<<< HEAD
 } from "typeorm";
 import { Subscription } from "./subscription.entity";
 =======
@@ -15,6 +16,10 @@ import { Subscription } from "./subscription.entity";
   UpdateDateColumn
 } from "typeorm";
 >>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
+=======
+} from "typeorm";
+import { Subscription } from "./subscription.entity";
+>>>>>>> e74af0b (feat: Add item control schedule)
 
 export enum USER_ROLE {
   ADMIN = "admin",
@@ -38,6 +43,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Subscription, subcription => subcription.user)
   subcriptions: Relation<Subscription[]>;
+<<<<<<< HEAD
 =======
 >>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
+=======
+>>>>>>> e74af0b (feat: Add item control schedule)
 }

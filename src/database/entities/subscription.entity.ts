@@ -28,6 +28,7 @@ export class Subscription extends BaseEntity {
 
   @ManyToOne(() => User)
   user: Relation<User>;
+<<<<<<< HEAD
 =======
   @Column({ name: "item_id" })
   itemId: string;
@@ -35,6 +36,8 @@ export class Subscription extends BaseEntity {
   @Column({ name: "user_id" })
   userId: string;
 >>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
+=======
+>>>>>>> e74af0b (feat: Add item control schedule)
 
   @Column({ type: "jsonb" })
   metadata: Record<string, any>;

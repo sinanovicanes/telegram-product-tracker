@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   type Relation
+<<<<<<< HEAD
 } from "typeorm";
 import { Subscription } from "./subscription.entity";
 =======
@@ -15,6 +16,10 @@ import { Subscription } from "./subscription.entity";
   UpdateDateColumn
 } from "typeorm";
 >>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
+=======
+} from "typeorm";
+import { Subscription } from "./subscription.entity";
+>>>>>>> e74af0b (feat: Add item control schedule)
 
 @Entity()
 export class Item extends BaseEntity {
@@ -25,10 +30,14 @@ export class Item extends BaseEntity {
   url: string;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   @Column({ type: "timestamp", name: "last_control", default: () => "CURRENT_TIMESTAMP" })
 =======
   @Column({ type: "timestamp", name: "last_control" })
 >>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
+=======
+  @Column({ type: "timestamp", name: "last_control", default: () => "CURRENT_TIMESTAMP" })
+>>>>>>> e74af0b (feat: Add item control schedule)
   lastControl: Date;
 
   @Column({ type: "jsonb" })
@@ -52,6 +61,9 @@ export class Item extends BaseEntity {
 
   @OneToMany(() => Subscription, subcription => subcription.item)
   subscribers: Relation<Subscription[]>;
+<<<<<<< HEAD
 =======
 >>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
+=======
+>>>>>>> e74af0b (feat: Add item control schedule)
 }

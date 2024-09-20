@@ -31,6 +31,7 @@ export class ItemControlSchedule extends Schedule {
         continue;
       }
 
+<<<<<<< HEAD
       const differences: string[] = ["sizes"];
 
       // Compare the item data with the metadata
@@ -44,6 +45,13 @@ export class ItemControlSchedule extends Schedule {
         }
 
         if (type === "object") {
+=======
+      const differences: string[] = [];
+
+      // Compare the item data with the metadata
+      for (const key in itemData) {
+        if (typeof itemData[key as keyof typeof itemData] === "object") {
+>>>>>>> e74af0b (feat: Add item control schedule)
           if (!isEqualObjects(itemData[key], item.metadata[key])) {
             differences.push(key);
           }
@@ -60,6 +68,7 @@ export class ItemControlSchedule extends Schedule {
         continue;
       }
 
+<<<<<<< HEAD
       const changesString = differences.reduce((acc, curr) => {
         if (typeof itemData[curr] === "object") {
           if (curr === "sizes") {
@@ -79,6 +88,14 @@ export class ItemControlSchedule extends Schedule {
             return acc;
           }
 
+=======
+      // Update the item metadata
+      item.metadata = itemData;
+      await item.save();
+
+      const changesString = differences.reduce((acc, curr) => {
+        if (typeof itemData[curr] === "object") {
+>>>>>>> e74af0b (feat: Add item control schedule)
           return `${acc}\n${capitalize(curr)}`;
         }
 
@@ -87,10 +104,13 @@ export class ItemControlSchedule extends Schedule {
 
       const text = `${itemData.name} has been updated. The following fields have changed:\n${changesString}\n\n${item.url}`;
 
+<<<<<<< HEAD
       // Update the item metadata
       item.metadata = itemData;
       await item.save();
 
+=======
+>>>>>>> e74af0b (feat: Add item control schedule)
       // Notify the subscribers
       for (const subscriber of item.subscribers) {
         // Notify the subscriber
