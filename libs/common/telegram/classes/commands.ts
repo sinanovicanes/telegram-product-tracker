@@ -9,7 +9,7 @@ export abstract class Command {
   name: string;
   description: string;
 
-  abstract handler(ctx: Context): void | Promise<void>;
+  abstract handler(ctx: Context): unknown | Promise<unknown>;
 
   constructor(options: CommandOptions) {
     this.name = options.name;

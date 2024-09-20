@@ -9,5 +9,7 @@ export class StartCommand extends Command {
     });
   }
 
-  async handler(ctx: Context) {}
+  async handler(ctx: Context) {
+    console.log(ctx.message.from);
+  }
 }
