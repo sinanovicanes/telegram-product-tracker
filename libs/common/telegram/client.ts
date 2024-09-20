@@ -3,6 +3,7 @@ import { Telegraf } from "telegraf";
 <<<<<<< HEAD
 import { container } from "tsyringe";
 import { CommandManager, ScheduleManager } from "./managers";
+<<<<<<< HEAD
 import { Injectable } from "../decorators";
 
 @Injectable()
@@ -17,10 +18,13 @@ export class TelegramClient extends Telegraf {
 import { container } from "tsyringe";
 >>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
 import { CommandManager } from "./managers";
+=======
+>>>>>>> 52a77c9 (feat: Schedules)
 import { Injectable } from "../decorators";
 
 @Injectable()
 export class TelegramClient extends Telegraf {
+<<<<<<< HEAD
 <<<<<<< HEAD
   private readonly commandManager: CommandManager = new CommandManager(this);
 
@@ -29,6 +33,12 @@ export class TelegramClient extends Telegraf {
 >>>>>>> f22edf2 (Initial commit)
 =======
   constructor(private readonly commandManager: CommandManager) {
+=======
+  constructor(
+    private readonly commandManager: CommandManager,
+    private readonly scheduleManager: ScheduleManager
+  ) {
+>>>>>>> 52a77c9 (feat: Schedules)
     super(container.resolve("BOT_TOKEN"));
 >>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
   }
@@ -47,6 +57,7 @@ export class TelegramClient extends Telegraf {
     super.launch(config as any, () => {
       this.scheduleManager.start();
     });
+<<<<<<< HEAD
 =======
     await this.commandManager.initialize();
 =======
@@ -54,5 +65,7 @@ export class TelegramClient extends Telegraf {
 >>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
     await super.launch(config as any, onLaunch as any);
 >>>>>>> f22edf2 (Initial commit)
+=======
+>>>>>>> 52a77c9 (feat: Schedules)
   }
 }

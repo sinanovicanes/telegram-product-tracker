@@ -1,7 +1,10 @@
 import { Logger } from "@app/common";
 import { Glob } from "bun";
 import { Schedule } from "../classes";
+<<<<<<< HEAD
 import { container } from "tsyringe";
+=======
+>>>>>>> 52a77c9 (feat: Schedules)
 
 export class ScheduleLoader {
   private static readonly logger = new Logger(ScheduleLoader.name);
@@ -15,15 +18,24 @@ export class ScheduleLoader {
 
       try {
         file = await import(filePath);
+<<<<<<< HEAD
       } catch (e) {
         this.logger.error(`Failed to load ${filePath}: ${e}`);
+=======
+      } catch {
+        this.logger.error(`Failed to load file: ${filePath}`);
+>>>>>>> 52a77c9 (feat: Schedules)
         continue;
       }
 
       for (const key in file) {
         if (file[key].prototype instanceof Schedule) {
           try {
+<<<<<<< HEAD
             const schedule = container.resolve<Schedule>(file[key]);
+=======
+            const schedule = new file[key]();
+>>>>>>> 52a77c9 (feat: Schedules)
 
             schedules.push(schedule);
           } catch (e) {

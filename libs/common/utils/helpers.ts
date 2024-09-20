@@ -1,6 +1,7 @@
 export function pluralify(singular: string, plural: string, count: number): string {
   return count === 1 ? singular : plural;
 }
+<<<<<<< HEAD
 
 export function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -24,3 +25,5 @@ export function isEqualObjects(
 ): boolean {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
+=======
+>>>>>>> 52a77c9 (feat: Schedules)
