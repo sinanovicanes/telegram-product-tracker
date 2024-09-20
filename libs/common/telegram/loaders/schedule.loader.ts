@@ -1,14 +1,7 @@
-import { Logger } from "@app/common";
-import { Glob } from "bun";
+import { Logger } from "@app/common/logger";
 import { Schedule } from "../classes";
-<<<<<<< HEAD
-<<<<<<< HEAD
+import { Glob } from "bun";
 import { container } from "tsyringe";
-=======
->>>>>>> 52a77c9 (feat: Schedules)
-=======
-import { container } from "tsyringe";
->>>>>>> f719c3e (refactor: Update loaders to resolve instances from container)
 
 export class ScheduleLoader {
   private static readonly logger = new Logger(ScheduleLoader.name);
@@ -22,33 +15,15 @@ export class ScheduleLoader {
 
       try {
         file = await import(filePath);
-<<<<<<< HEAD
-<<<<<<< HEAD
       } catch (e) {
         this.logger.error(`Failed to load ${filePath}: ${e}`);
-=======
-      } catch {
-        this.logger.error(`Failed to load file: ${filePath}`);
->>>>>>> 52a77c9 (feat: Schedules)
-=======
-      } catch (e) {
-        this.logger.error(`Failed to load file ${filePath}: ${e}`);
->>>>>>> a630d27 (feat: Add guards)
         continue;
       }
 
       for (const key in file) {
         if (file[key].prototype instanceof Schedule) {
           try {
-<<<<<<< HEAD
-<<<<<<< HEAD
             const schedule = container.resolve<Schedule>(file[key]);
-=======
-            const schedule = new file[key]();
->>>>>>> 52a77c9 (feat: Schedules)
-=======
-            const schedule = container.resolve<Schedule>(file[key]);
->>>>>>> f719c3e (refactor: Update loaders to resolve instances from container)
 
             schedules.push(schedule);
           } catch (e) {

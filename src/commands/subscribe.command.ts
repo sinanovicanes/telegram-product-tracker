@@ -15,7 +15,7 @@ export class SubscribeCommand extends Command {
   }
 
   async handler(ctx: Context) {
-    const [targetURL] = getCommandArgsFromRawText(ctx.text);
+    const [targetURL] = getCommandArgsFromRawText(ctx.text ?? "");
 
     // TODO: Implement a better URL validation
     if (!targetURL || !isURL(targetURL)) {
@@ -25,7 +25,7 @@ export class SubscribeCommand extends Command {
       return ctx.reply("Please provide a valid URL to subscribe to.");
     }
 
-    const userId = ctx.from.id.toString();
+    const userId = ctx.from!.id.toString();
 
     try {
       await this.subscriptionService.subscribe(userId, targetURL);

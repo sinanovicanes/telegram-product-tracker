@@ -7,18 +7,9 @@
     "moduleDetection": "force",
     "jsx": "react-jsx",
     "allowJs": true,
-<<<<<<< HEAD
-<<<<<<< HEAD
     
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-=======
->>>>>>> f22edf2 (Initial commit)
-=======
-    
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
->>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
 
     // Bundler mode
     "moduleResolution": "bundler",
@@ -36,15 +27,8 @@
     // Best practices
     "strict": true,
     "skipLibCheck": true,
+    "strictNullChecks": false,
     "noFallthroughCasesInSwitch": true,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "strictNullChecks": false,
-=======
->>>>>>> f22edf2 (Initial commit)
-=======
-    "strictNullChecks": false,
->>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
 
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,

@@ -1,10 +1,6 @@
 export function pluralify(singular: string, plural: string, count: number): string {
   return count === 1 ? singular : plural;
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> a630d27 (feat: Add guards)
 
 export function capitalize(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -22,14 +18,6 @@ export function getCommandArgsFromRawText(text: string): string[] {
   return args;
 }
 
-export function isEqualObjects(
-  obj1: Record<string, unknown>,
-  obj2: Record<string, unknown>
-): boolean {
+export function isEqualObjects(obj1: Object, obj2: Object): boolean {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
-<<<<<<< HEAD
-=======
->>>>>>> 52a77c9 (feat: Schedules)
-=======
->>>>>>> a630d27 (feat: Add guards)

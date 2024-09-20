@@ -14,41 +14,10 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "cheerio": "^1.0.0",
-    "class-validator": "^0.14.1",
-<<<<<<< HEAD
-=======
-    "cheerio": "^1.0.0",
->>>>>>> d9ca25a (feat: Add zara scraper with service)
-=======
->>>>>>> e74af0b (feat: Add item control schedule)
     "cron": "^3.1.7",
-    "pg": "^8.13.0",
-<<<<<<< HEAD
-=======
-    "cron": "^3.1.7",
->>>>>>> 52a77c9 (feat: Schedules)
-=======
->>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
     "reflect-metadata": "^0.2.2",
     "telegraf": "^4.16.3",
     "tsyringe": "^4.8.0",
-    "typeorm": "^0.3.20",
-<<<<<<< HEAD
-=======
-    "telegraf": "^4.16.3",
->>>>>>> f22edf2 (Initial commit)
-=======
-    "reflect-metadata": "^0.2.2",
-    "telegraf": "^4.16.3",
-    "tsyringe": "^4.8.0",
->>>>>>> b283f45 (chore: Add tsyringe for dependency injection)
-=======
->>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
     "zod": "^3.23.8"
   }
 }

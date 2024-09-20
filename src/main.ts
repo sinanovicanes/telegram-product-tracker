@@ -1,10 +1,11 @@
 import { TelegramClientFactory } from "@app/common/telegram";
-import { NotBotGuard } from "./guards";
+import { AuthGuard, NotBotGuard } from "./guards";
 
 async function main() {
   const client = TelegramClientFactory.create(process.env.TELEGRAM_BOT_TOKEN);
 
   client.useGlobalGuards(NotBotGuard);
+  client.useGlobalGuards(AuthGuard);
 
   await client.launch();
 }

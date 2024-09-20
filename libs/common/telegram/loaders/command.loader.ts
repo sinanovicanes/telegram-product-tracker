@@ -1,14 +1,8 @@
 import { Logger } from "@app/common";
 import { Glob } from "bun";
 import { Command } from "../classes";
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 import { container } from "tsyringe";
-=======
->>>>>>> f22edf2 (Initial commit)
-=======
-import { container } from "tsyringe";
->>>>>>> f719c3e (refactor: Update loaders to resolve instances from container)
 
 export class CommandLoader {
   private static readonly logger = new Logger(CommandLoader.name);
@@ -22,33 +16,15 @@ export class CommandLoader {
 
       try {
         file = await import(filePath);
-<<<<<<< HEAD
-<<<<<<< HEAD
       } catch (e) {
         this.logger.error(`Failed to load ${filePath}: ${e}`);
-=======
-      } catch {
-        this.logger.error(`Failed to load file: ${filePath}`);
->>>>>>> f22edf2 (Initial commit)
-=======
-      } catch (e) {
-        this.logger.error(`Failed to load ${filePath}: ${e}`);
->>>>>>> a630d27 (feat: Add guards)
         continue;
       }
 
       for (const key in file) {
         if (file[key].prototype instanceof Command) {
           try {
-<<<<<<< HEAD
-<<<<<<< HEAD
             const command = container.resolve<Command>(file[key]);
-=======
-            const command = new file[key]();
->>>>>>> f22edf2 (Initial commit)
-=======
-            const command = container.resolve<Command>(file[key]);
->>>>>>> f719c3e (refactor: Update loaders to resolve instances from container)
 
             commands.push(command);
           } catch (e) {
