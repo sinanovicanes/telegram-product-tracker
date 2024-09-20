@@ -3,20 +3,23 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
+import { Item } from "./item.entity";
+import { User } from "./user.entity";
 
 @Entity()
-export class Subscription extends BaseEntity {
+export class Subcription extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: "item_id" })
-  itemId: string;
+  @ManyToOne(() => Item)
+  item: Item;
 
-  @Column({ name: "user_id" })
-  userId: string;
+  @ManyToOne(() => User)
+  user: User;
 
   @Column({ type: "jsonb" })
   metadata: Record<string, any>;

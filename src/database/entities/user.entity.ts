@@ -3,9 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
   UpdateDateColumn
 } from "typeorm";
+import { Subcription } from "./subcription.entity";
 
 export enum USER_ROLE {
   ADMIN = "admin",
@@ -25,4 +27,7 @@ export class User extends BaseEntity {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  @OneToMany(() => Subcription, subcription => subcription.user)
+  subcriptions: Subcription[];
 }
