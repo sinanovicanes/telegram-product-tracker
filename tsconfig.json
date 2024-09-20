@@ -38,9 +38,13 @@
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
     "strictNullChecks": false,
 =======
 >>>>>>> f22edf2 (Initial commit)
+=======
+    "strictNullChecks": false,
+>>>>>>> e28a3a6 (feat: Add database connection with dockerfiles and entities)
 
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
