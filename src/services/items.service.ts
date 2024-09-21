@@ -1,11 +1,11 @@
 import { itemRepository } from "@/database";
-import { Injectable } from "@app/common/decorators";
-import { ZaraService } from "./zara.service";
 import type { Item } from "@/database/entities";
+import { Injectable } from "@app/common/decorators";
+import { ScraperService } from "./scraper.service";
 
 @Injectable()
 export class ItemsService {
-  constructor(private readonly zaraService: ZaraService) {}
+  constructor(private readonly scraperService: ScraperService) {}
 
   getItems(): Promise<Item[]> {
     return itemRepository.find({
@@ -26,7 +26,7 @@ export class ItemsService {
   }
 
   async createItem(url: string): Promise<Item> {
-    const itemData = await this.zaraService.getItemInfo(url);
+    const itemData = await this.scraperService.scrape(url);
     const item = itemRepository.create({
       url,
       metadata: itemData

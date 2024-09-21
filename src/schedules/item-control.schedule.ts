@@ -1,4 +1,4 @@
-import { ZaraService } from "@/services";
+import { ScraperService } from "@/services";
 import { ItemsService } from "@/services/items.service";
 import { Injectable } from "@app/common/decorators";
 import { Schedule } from "@app/common/telegram";
@@ -12,7 +12,7 @@ export class ItemControlSchedule extends Schedule {
   constructor(
     private readonly client: TelegramClient,
     private readonly itemsService: ItemsService,
-    private readonly zaraService: ZaraService
+    private readonly scraperService: ScraperService
   ) {
     // Run every 30 minutes
     super("0 */30 * * * *");
@@ -22,8 +22,15 @@ export class ItemControlSchedule extends Schedule {
     const items = await this.itemsService.getItems();
     this.logger.log(`Checking ${items.length} items`);
 
+    if (!items.length) return;
+
+    const results = await this.scraperService.scrapeMany(items.map(item => item.url));
+
+    let i = 0;
+
     for (const item of items) {
-      const itemData = await this.zaraService.getItemInfo(item.url).catch(() => null);
+      const itemData = results[i];
+      i++;
 
       if (!itemData) {
         this.logger.warn(`Item ${item.url} not found. Removing from database.`);
@@ -31,7 +38,7 @@ export class ItemControlSchedule extends Schedule {
         continue;
       }
 
-      const differences: string[] = ["sizes"];
+      const differences: string[] = [];
 
       // Compare the item data with the metadata
       for (const key in itemData) {

@@ -21,3 +21,17 @@ export function getCommandArgsFromRawText(text: string): string[] {
 export function isEqualObjects(obj1: Object, obj2: Object): boolean {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
+
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function getRandomUserAgent() {
+  const userAgents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+  ];
+
+  return userAgents[Math.floor(Math.random() * userAgents.length)];
+}

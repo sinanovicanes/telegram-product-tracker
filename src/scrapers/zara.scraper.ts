@@ -1,37 +1,27 @@
 import { ScraperError } from "@/errors";
+import type { ScrapeResult } from "@/services";
 import { Logger } from "@app/common/logger";
-import { fetch } from "bun";
-import * as cheerio from "cheerio";
+import { Page } from "puppeteer";
 
-interface ZaraItemResult {
-  name: string;
-  price: string;
-  sizes: string[];
-}
+export class ZaraScraper {
+  private static readonly logger = new Logger(ZaraScraper.name);
 
-export class ZaraItemScraper {
-  private readonly logger = new Logger(ZaraItemScraper.name);
-  constructor(private readonly url: string) {}
+  static async scrape(page: Page, url: string): Promise<ScrapeResult> {
+    this.logger.log(`Scraping ${url}`);
+    await page.goto(url);
 
-  async scrape(): Promise<ZaraItemResult> {
-    this.logger.log(`Scraping ${this.url}`);
-    const response = await fetch(this.url);
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    const name =
-      $(".product-detail-info__header-name").text() ||
-      $(".product-detail-card-info__name").text();
-
-    const price = $(".money-amount__main").text();
-    const sizes = $(
-      ".size-selector-list__item:not(.size-selector-list__item--out-of-stock) .product-size-info__main-label"
-    )
-      .map((_, el) => $(el).text())
-      .get();
+    const name = await page.$eval(
+      ".product-detail-info__header-name",
+      el => el.textContent
+    );
+    const price = await page.$eval(".money-amount__main", el => el.textContent);
+    const sizes = await page.$$eval(
+      ".size-selector-list__item:not(.size-selector-list__item--out-of-stock) .product-size-info__main-label",
+      els => els.map(el => el.textContent)
+    );
 
     if (!name || !price) {
-      throw new ScraperError(ZaraItemScraper);
+      throw new ScraperError(this);
     }
 
     return {
