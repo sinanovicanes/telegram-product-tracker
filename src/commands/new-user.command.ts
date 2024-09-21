@@ -16,7 +16,7 @@ export class NewUserCommand extends Command {
   }
 
   async handler(ctx: Context) {
-    const [userId] = getCommandArgsFromRawText(ctx.text!);
+    const [userId] = getCommandArgsFromRawText(ctx.text ?? "");
 
     if (!userId) {
       return await ctx.reply("You must provide a user id");
