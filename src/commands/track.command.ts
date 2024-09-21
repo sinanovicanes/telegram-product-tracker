@@ -1,5 +1,5 @@
 import { ScraperError } from "@/errors";
-import { SubscriptionService } from "@/services/subscription.service";
+import { TrackerService } from "@/services";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
@@ -7,11 +7,11 @@ import { isURL } from "class-validator";
 import type { Context } from "telegraf";
 
 @Injectable()
-export class SubscribeCommand extends Command {
-  constructor(private readonly subscriptionService: SubscriptionService) {
+export class TrackCommand extends Command {
+  constructor(private readonly trackerService: TrackerService) {
     super({
-      name: "subscribe",
-      description: "Subscribe command"
+      name: "track",
+      description: "Track item"
     });
   }
 
@@ -19,18 +19,19 @@ export class SubscribeCommand extends Command {
     const [targetURL] = getCommandArgsFromRawText(ctx.text ?? "");
 
     // TODO: Implement a better URL validation
-    if (!targetURL || !isURL(targetURL)) {
-      if (!targetURL.startsWith("https://www.zara.com/tr/tr/")) {
-        return ctx.reply("Please provide a valid Zara URL to subscribe to.");
-      }
-      return ctx.reply("Please provide a valid URL to subscribe to.");
+    if (!targetURL) {
+      return ctx.reply("Please provide a URL to track.");
+    }
+
+    if (!isURL(targetURL) || !targetURL.startsWith("https://www.zara.com/tr/tr/")) {
+      return ctx.reply("Please provide a valid URL to track.");
     }
 
     const userId = ctx.from!.id.toString();
 
     try {
-      await this.subscriptionService.subscribe(userId, targetURL);
-      return ctx.reply("You have successfully subscribed to the item!");
+      await this.trackerService.track(userId, targetURL);
+      return ctx.reply("You have successfully start tracking the item!");
     } catch (error) {
       if (error instanceof ScraperError) {
         return ctx.reply("An error occurred while retrieving item data.");
@@ -39,9 +40,9 @@ export class SubscribeCommand extends Command {
       // TODO: Implement a better error handling
       // Duplicate key error code
       if (typeof error == "object" && "code" in error && error.code === "23505") {
-        return ctx.reply("You are already subscribed to this item.");
+        return ctx.reply("You are already tracking this item.");
       }
-      return ctx.reply("An error occurred while trying to subscribe to the item.");
+      return ctx.reply("An error occurred while trying to track the item.");
     }
   }
 }

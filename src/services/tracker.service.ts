@@ -1,13 +1,13 @@
 import { Injectable } from "@app/common/decorators";
 import { ItemsService } from "./items.service";
-import { subscriptionRepository } from "@/database";
+import { trackerRepository } from "@/database";
 
 @Injectable()
-export class SubscriptionService {
+export class TrackerService {
   constructor(private readonly itemsService: ItemsService) {}
 
-  async getSubscribedItems(userId: string) {
-    const subscriptions = await subscriptionRepository.find({
+  async getTrackedItems(userId: string) {
+    const trackedItems = await trackerRepository.find({
       select: {
         item: {
           url: true,
@@ -26,29 +26,28 @@ export class SubscriptionService {
       }
     });
 
-    return subscriptions.map(subscription => subscription.item);
+    return trackedItems.map(tracker => tracker.item);
   }
 
-  async subscribe(userId: string, url: string) {
+  async track(userId: string, url: string) {
     const item = await this.itemsService.getOrCreateItem(url);
 
-    const subscription = await subscriptionRepository.insert({
+    const tracker = await trackerRepository.insert({
       user: { id: userId },
-      item: { id: item.id },
-      metadata: {}
+      item: { id: item.id }
     });
 
-    return subscription;
+    return tracker;
   }
 
-  async unsubscribe(userId: string, url: string) {
+  async untrack(userId: string, url: string) {
     const item = await this.itemsService.findItem(url);
 
     if (!item) {
       return;
     }
 
-    await subscriptionRepository.delete({
+    await trackerRepository.delete({
       user: { id: userId },
       item: { id: item.id }
     });

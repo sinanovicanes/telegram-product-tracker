@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
   type Relation
 } from "typeorm";
-import { Subscription } from "./subscription.entity";
+import { Tracker } from "./tracker.entity";
 
 export enum USER_ROLE {
   ADMIN = "admin",
@@ -29,6 +29,6 @@ export class User extends BaseEntity {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => Subscription, subcription => subcription.user)
-  subcriptions: Relation<Subscription[]>;
+  @OneToMany(() => Tracker, tracker => tracker.user)
+  trackers: Relation<Tracker[]>;
 }

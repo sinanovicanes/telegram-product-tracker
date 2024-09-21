@@ -98,10 +98,9 @@ export class ItemControlSchedule extends Schedule {
       item.metadata = itemData;
       await item.save();
 
-      // Notify the subscribers
-      for (const subscriber of item.subscribers) {
-        // Notify the subscriber
-        this.client.telegram.sendMessage(subscriber.user.id, text);
+      // Notify the trackers
+      for (const tracker of item.trackers) {
+        this.client.telegram.sendMessage(tracker.user.id, text);
       }
     }
   }

@@ -1,12 +1,11 @@
 import {
   BaseEntity,
-  Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  Index,
   type Relation
 } from "typeorm";
 import { Item } from "./item.entity";
@@ -14,7 +13,7 @@ import { User } from "./user.entity";
 
 @Entity()
 @Index(["item", "user"], { unique: true })
-export class Subscription extends BaseEntity {
+export class Tracker extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,9 +22,6 @@ export class Subscription extends BaseEntity {
 
   @ManyToOne(() => User)
   user: Relation<User>;
-
-  @Column({ type: "jsonb" })
-  metadata: Record<string, any>;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;

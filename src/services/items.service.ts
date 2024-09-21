@@ -10,7 +10,7 @@ export class ItemsService {
   getItems(): Promise<Item[]> {
     return itemRepository.find({
       relations: {
-        subscribers: {
+        trackers: {
           user: true
         }
       }

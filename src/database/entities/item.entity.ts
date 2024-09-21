@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
   type Relation
 } from "typeorm";
-import { Subscription } from "./subscription.entity";
+import { Tracker } from "./tracker.entity";
 
 @Entity()
 export class Item extends BaseEntity {
@@ -30,6 +30,6 @@ export class Item extends BaseEntity {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => Subscription, subcription => subcription.item)
-  subscribers: Relation<Subscription[]>;
+  @OneToMany(() => Tracker, tracker => tracker.item)
+  trackers: Relation<Tracker[]>;
 }
