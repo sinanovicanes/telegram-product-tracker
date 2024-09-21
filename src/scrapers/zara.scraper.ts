@@ -19,7 +19,10 @@ export class ZaraItemScraper {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    const name = $(".product-detail-info__header-name").text();
+    const name =
+      $(".product-detail-info__header-name").text() ||
+      $(".product-detail-card-info__name").text();
+
     const price = $(".money-amount__main").text();
     const sizes = $(
       ".size-selector-list__item:not(.size-selector-list__item--out-of-stock) .product-size-info__main-label"

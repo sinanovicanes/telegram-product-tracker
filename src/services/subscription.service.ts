@@ -6,6 +6,29 @@ import { subscriptionRepository } from "@/database";
 export class SubscriptionService {
   constructor(private readonly itemsService: ItemsService) {}
 
+  async getSubscribedItems(userId: string) {
+    const subscriptions = await subscriptionRepository.find({
+      select: {
+        item: {
+          url: true,
+          metadata: {
+            name: true,
+            price: true,
+            image: true
+          }
+        }
+      },
+      where: {
+        user: { id: userId }
+      },
+      relations: {
+        item: true
+      }
+    });
+
+    return subscriptions.map(subscription => subscription.item);
+  }
+
   async subscribe(userId: string, url: string) {
     const item = await this.itemsService.getOrCreateItem(url);
 
