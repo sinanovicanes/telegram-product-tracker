@@ -6,7 +6,7 @@ import { isURL } from "class-validator";
 import type { Context } from "telegraf";
 
 @Injectable()
-export class SubscribeCommand extends Command {
+export class UnsubscribeCommand extends Command {
   constructor(private readonly subscriptionService: SubscriptionService) {
     super({
       name: "unsubscribe",
