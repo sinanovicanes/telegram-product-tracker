@@ -1,10 +1,15 @@
 import { container } from "tsyringe";
 import { TelegramClient } from "../client";
+import { CooldownGuard } from "@app/common/guards";
 
 export class TelegramClientFactory {
   static create(token: string) {
     container.register("BOT_TOKEN", { useValue: token });
 
-    return container.resolve(TelegramClient);
+    const client = container.resolve(TelegramClient);
+
+    client.useGlobalGuards(CooldownGuard);
+
+    return client;
   }
 }

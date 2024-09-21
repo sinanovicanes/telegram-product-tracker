@@ -1,3 +1,5 @@
+import { ScraperError } from "@/errors";
+import { Logger } from "@app/common/logger";
 import { fetch } from "bun";
 import * as cheerio from "cheerio";
 
@@ -8,9 +10,11 @@ interface ZaraItemResult {
 }
 
 export class ZaraItemScraper {
+  private readonly logger = new Logger(ZaraItemScraper.name);
   constructor(private readonly url: string) {}
 
   async scrape(): Promise<ZaraItemResult> {
+    this.logger.log(`Scraping ${this.url}`);
     const response = await fetch(this.url);
     const html = await response.text();
     const $ = cheerio.load(html);
@@ -22,6 +26,10 @@ export class ZaraItemScraper {
     )
       .map((_, el) => $(el).text())
       .get();
+
+    if (!name || !price) {
+      throw new ScraperError(ZaraItemScraper);
+    }
 
     return {
       name,

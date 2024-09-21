@@ -1,6 +1,9 @@
 import { COOLDOWN_METADATA_KEY } from "../constants";
+import { Injectable } from "../decorators";
 import { CooldownService } from "../services";
 import { ExecutionContext, Guard } from "../telegram";
+
+@Injectable()
 export class CooldownGuard extends Guard {
   constructor(private readonly cooldownService: CooldownService) {
     super();

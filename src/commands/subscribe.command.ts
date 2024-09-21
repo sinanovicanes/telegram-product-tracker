@@ -1,3 +1,4 @@
+import { ScraperError } from "@/errors";
 import { SubscriptionService } from "@/services/subscription.service";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
@@ -31,6 +32,15 @@ export class SubscribeCommand extends Command {
       await this.subscriptionService.subscribe(userId, targetURL);
       return ctx.reply("You have successfully subscribed to the item!");
     } catch (error) {
+      if (error instanceof ScraperError) {
+        return ctx.reply("An error occurred while retrieving item data.");
+      }
+
+      // TODO: Implement a better error handling
+      // Duplicate key error code
+      if (typeof error == "object" && "code" in error && error.code === "23505") {
+        return ctx.reply("You are already subscribed to this item.");
+      }
       return ctx.reply("An error occurred while trying to subscribe to the item.");
     }
   }

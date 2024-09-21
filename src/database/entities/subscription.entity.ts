@@ -6,12 +6,14 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  Index,
   type Relation
 } from "typeorm";
 import { Item } from "./item.entity";
 import { User } from "./user.entity";
 
 @Entity()
+@Index(["item", "user"], { unique: true })
 export class Subscription extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
