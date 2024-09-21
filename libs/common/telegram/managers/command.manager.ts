@@ -9,6 +9,13 @@ import { BaseManager } from "./base.manager";
 export class CommandManager extends BaseManager {
   private readonly commands: Map<Command["name"], Command> = new Map();
 
+  getCommandList(): { name: Command["name"]; description: Command["description"] }[] {
+    return Array.from(this.commands.values()).map(command => ({
+      name: command.name,
+      description: command.description
+    }));
+  }
+
   private loadCommand(command: Command, client: TelegramClient) {
     this.commands.set(command.name, command);
 
