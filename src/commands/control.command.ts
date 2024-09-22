@@ -1,24 +1,27 @@
-import type { Item } from "@/database/entities";
-import { ScraperService, type ScrapeResult } from "@/services";
-import { ItemsService } from "@/services/items.service";
-import { Injectable } from "@app/common/decorators";
-import { Schedule } from "@app/common/telegram";
+import { USER_ROLE, type Item } from "@/database/entities";
+import { ItemsService, ScraperService, type ScrapeResult } from "@/services";
+import { Injectable, Roles } from "@app/common/decorators";
+import { Logger } from "@app/common/logger";
+import { Command } from "@app/common/telegram";
 import { TelegramClient } from "@app/common/telegram/client";
 import { capitalize, isEqualObjects } from "@app/common/utils";
 
 const MAX_SCRAPE_FAILURES = 3;
 
 @Injectable()
-export class ItemControlSchedule extends Schedule {
-  name = "item-control-schedule";
+@Roles(USER_ROLE.ADMIN)
+export class ControlCommand extends Command {
+  private readonly logger = new Logger(ControlCommand.name);
 
   constructor(
     private readonly client: TelegramClient,
     private readonly itemsService: ItemsService,
     private readonly scraperService: ScraperService
   ) {
-    // Run every 30 minutes
-    super("0 */30 * * * *");
+    super({
+      name: "control",
+      description: "Control items"
+    });
   }
 
   async controlItem(item: Item) {
@@ -110,7 +113,8 @@ export class ItemControlSchedule extends Schedule {
     }
   }
 
-  async onSchedule() {
+  async handler() {
+    this.logger.log("Control command received");
     const items = await this.itemsService.getItems();
 
     this.logger.log(`Checking ${items.length} items`);
@@ -119,7 +123,11 @@ export class ItemControlSchedule extends Schedule {
 
     const startTime = Date.now();
 
-    await Promise.all(items.map((item, i) => this.controlItem(item)));
+    // await Promise.all(items.map((item, i) => this.controlItem(item)));
+
+    for (const item of items) {
+      await this.controlItem(item);
+    }
 
     this.logger.log(`${items.length} items checked in ${Date.now() - startTime}ms`);
   }

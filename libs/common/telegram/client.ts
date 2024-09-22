@@ -1,9 +1,10 @@
+import { Telegraf } from "telegraf";
 import { container } from "tsyringe";
 import { Injectable } from "../decorators";
-import { CommandManager, ScheduleManager } from "./managers";
-import { Telegraf } from "telegraf";
+import { env } from "../env.validation";
 import type { Constructor } from "../interfaces";
 import type { Guard, Middleware } from "./classes";
+import { CommandManager, ScheduleManager } from "./managers";
 
 @Injectable()
 export class TelegramClient extends Telegraf {
@@ -30,17 +31,22 @@ export class TelegramClient extends Telegraf {
     this.commandManager.useGuards(...guards);
   }
 
-  async launch(onLaunch?: (() => void) | undefined): Promise<void>;
-  async launch(
-    config: Telegraf.LaunchOptions,
-    onLaunch?: (() => void) | undefined
-  ): Promise<void>;
-  async launch(config?: unknown, onLaunch?: unknown): Promise<void> {
+  async launch() {
     await this.commandManager.initialize(this);
     await this.scheduleManager.initialize();
 
-    super.launch(config as any, () => {
-      this.scheduleManager.start();
-    });
+    return super.launch(
+      {
+        webhook: {
+          domain: env.URL,
+          port: env.PORT,
+          path: "/telegraf/webhook",
+          secretToken: env.WEBHOOK_SECRET
+        }
+      },
+      () => {
+        this.scheduleManager.start();
+      }
+    );
   }
 }

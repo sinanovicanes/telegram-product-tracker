@@ -2,6 +2,9 @@ import { z } from "zod";
 
 declare module "bun" {
   interface Env {
+    URL: string;
+    PORT: number;
+    WEBHOOK_SECRET: string;
     TELEGRAM_BOT_TOKEN: string;
     DATABASE_HOST: string;
     DATABASE_USER: string;
@@ -21,6 +24,9 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum([ENVIRONMENT.DEVELOPMENT, ENVIRONMENT.PRODUCTION])
     .default(ENVIRONMENT.DEVELOPMENT),
+  URL: z.string(),
+  PORT: z.number({ coerce: true }).default(8080),
+  WEBHOOK_SECRET: z.string(),
   TELEGRAM_BOT_TOKEN: z.string(),
   DATABASE_HOST: z.string(),
   DATABASE_USER: z.string(),

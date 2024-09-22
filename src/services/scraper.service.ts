@@ -11,54 +11,73 @@ export interface ScrapeResult {
 
 @Injectable()
 export class ScraperService {
-  private cluster: Cluster<string, ScrapeResult | null>;
-
-  constructor() {
-    this.initialize();
-  }
+  private cluster: Cluster<string, ScrapeResult | null | any>;
+  private closeClusterTimeout: Timer | null = null;
 
   async initialize() {
+    if (this.closeClusterTimeout) {
+      clearTimeout(this.closeClusterTimeout);
+      this.closeClusterTimeout = null;
+    }
+
+    if (this.cluster) return;
+
     this.cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 2,
+      maxConcurrency: 5,
       puppeteerOptions: {
-        args: ["--no-sandbox", "--disable-setuid-sandbox"],
-        headless: "shell"
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+        headless: true,
+        timeout: 120000,
+        args: [
+          "--no-sandbox"
+          // "--disable-setuid-sandbox",
+          // "--disable-dev-shm-usage",
+          // "--disable-gpu"
+        ]
       }
     });
 
     this.cluster.task(async ({ page, data: url }) => {
       try {
-        const userAgent = getRandomUserAgent();
-
-        await page.setUserAgent(userAgent);
+        await page.setUserAgent(
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.96 Safari/537.36"
+        );
 
         return await ZaraScraper.scrape(page, url);
       } catch (e) {
+        console.error(e);
         return null;
       }
     });
   }
 
-  private async waitForInitialization() {
-    while (!this.cluster) {
-      await delay(100);
+  private async closeCluster() {
+    if (this.closeClusterTimeout) {
+      clearTimeout(this.closeClusterTimeout);
+      this.closeClusterTimeout = null;
     }
+
+    this.closeClusterTimeout = setTimeout(() => {
+      this.cluster?.close();
+      this.cluster = null;
+      this.closeClusterTimeout = null;
+    }, 5 * 60 * 1000);
   }
 
   async scrapeMany(urls: string[]): Promise<(ScrapeResult | null)[]> {
-    if (!this.cluster) {
-      await this.waitForInitialization();
-    }
+    await this.initialize();
 
     return Promise.all(urls.map(url => this.scrape(url)));
   }
 
   async scrape(url: string): Promise<ScrapeResult | null> {
-    if (!this.cluster) {
-      await this.waitForInitialization();
-    }
+    await this.initialize();
 
-    return this.cluster.execute(url);
+    const result = await this.cluster.execute(url);
+
+    this.closeCluster();
+
+    return result;
   }
 }

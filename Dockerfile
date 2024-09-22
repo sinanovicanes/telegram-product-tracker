@@ -1,32 +1,32 @@
-# Use Bun base image for development
-FROM oven/bun:latest AS development
+# Use the Bun Alpine image
+FROM oven/bun:alpine
 
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and bun.lockb for dependencies
-COPY package.json bun.lockb ./
-
-# Install dependencies using Bun
-RUN bun install --frozen-lockfile
-
-# Copy the rest of the application
+# Copy your application code
 COPY . .
 
-# Use Bun base image for production
-FROM oven/bun:latest AS production
+# Install your application dependencies
+RUN bun install
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+# Install the required browsers for Puppeteer
+# RUN bunx puppeteer browsers install
 
-WORKDIR /app
+# Installs Chromium (100) package.
+RUN apk add --no-cache \
+  chromium \
+  nss \
+  freetype \
+  harfbuzz \
+  ca-certificates \
+  ttf-freefont
 
-# Copy package.json and bun.lockb for production
-COPY package.json bun.lockb ./
+# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/lib/chromium/chrome
 
-# Install only production dependencies
-RUN bun install --production
+# Expose the application port
+EXPOSE 8080
 
-# Copy the build files from the development stage
-
-# Run the application using Bun
-CMD ["bun", "run", "src/main.ts"]
+# Start the application
+CMD ["bun", "run", "start"]

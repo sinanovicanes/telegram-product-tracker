@@ -35,6 +35,13 @@ export class CommandManager extends BaseManager {
   async initialize(client: TelegramClient) {
     const commands = await CommandLoader.load("src/commands/**/*.ts");
 
+    client.telegram.setMyCommands(
+      commands.map(command => ({
+        command: command.name,
+        description: command.description
+      }))
+    );
+
     for (const command of commands) {
       this.loadCommand(command, client);
     }

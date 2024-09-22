@@ -1,16 +1,18 @@
 import { TelegramClientFactory } from "@app/common/telegram";
 import { AuthGuard, NotBotGuard } from "./guards";
 
-async function main() {
-  const client = TelegramClientFactory.create(process.env.TELEGRAM_BOT_TOKEN);
+const client = TelegramClientFactory.create(process.env.TELEGRAM_BOT_TOKEN);
 
-  client.useGlobalGuards(NotBotGuard);
-  client.useGlobalGuards(AuthGuard);
+client.useGlobalGuards(NotBotGuard);
+client.useGlobalGuards(AuthGuard);
 
-  await client.launch();
-}
+// const server = Bun.serve({
+//   port: 8080,
+//   fetch(req: Request): Response | Promise<Response> {
+//     return client.onRequest(req) || new Response("Hello World!");
+//   }
+// });
 
-main().catch(e => {
-  console.error(e);
-  process.exit(1);
-});
+client.launch().catch(console.error);
+
+// client.initialize(server).catch(console.error);

@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "bun build --outdir ./build src/main.ts",
+    "start": "NODE_ENV=production bun run src/main.ts",
     "dev": "bun --watch src/main.ts"
   },
   "devDependencies": {

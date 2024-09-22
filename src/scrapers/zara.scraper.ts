@@ -1,10 +1,21 @@
 import { ScraperError } from "@/errors";
 import type { ScrapeResult } from "@/services";
+import { delay } from "@app/common/utils";
 import { Page } from "puppeteer";
 
 export class ZaraScraper {
+  static async takeScreenshot(page: Page, url: string): Promise<Uint8Array> {
+    await page.goto(url);
+
+    await delay(20 * 1000);
+
+    return await page.screenshot();
+  }
+
   static async scrape(page: Page, url: string): Promise<ScrapeResult> {
     await page.goto(url);
+
+    await page.waitForSelector(".product-detail-info__header-name");
 
     const name = await page.$eval(
       ".product-detail-info__header-name",

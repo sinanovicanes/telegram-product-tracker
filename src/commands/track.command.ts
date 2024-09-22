@@ -1,5 +1,5 @@
 import { ScraperError } from "@/errors";
-import { TrackerService } from "@/services";
+import { ScraperService, TrackerService } from "@/services";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
@@ -8,7 +8,10 @@ import type { Context } from "telegraf";
 
 @Injectable()
 export class TrackCommand extends Command {
-  constructor(private readonly trackerService: TrackerService) {
+  constructor(
+    private readonly trackerService: TrackerService,
+    private readonly scraperService: ScraperService
+  ) {
     super({
       name: "track",
       description: "Track item"
@@ -23,9 +26,17 @@ export class TrackCommand extends Command {
       return ctx.reply("Please provide a URL to track.");
     }
 
-    if (!isURL(targetURL) || !targetURL.startsWith("https://www.zara.com/tr/tr/")) {
+    if (!isURL(targetURL)) {
       return ctx.reply("Please provide a valid URL to track.");
     }
+
+    //@ts-ignore
+    // const screenshot = (await this.scraperService.scrape(targetURL)) as Uint8Array;
+
+    // return ctx.replyWithPhoto({
+    //   source: Buffer.from(screenshot),
+    //   filename: "screenshot.png"
+    // });
 
     const userId = ctx.from!.id.toString();
 
@@ -42,7 +53,9 @@ export class TrackCommand extends Command {
       if (typeof error == "object" && "code" in error && error.code === "23505") {
         return ctx.reply("You are already tracking this item.");
       }
-      return ctx.reply("An error occurred while trying to track the item.");
+
+      return ctx.reply(`${error}`);
+      // return ctx.reply("An error occurred while trying to track the item.");
     }
   }
 }
