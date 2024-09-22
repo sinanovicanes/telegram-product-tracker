@@ -27,6 +27,11 @@ export class ItemsService {
 
   async createItem(url: string): Promise<Item> {
     const itemData = await this.scraperService.scrape(url);
+
+    if (!itemData) {
+      throw new Error("Failed to scrape item data.");
+    }
+
     const item = itemRepository.create({
       url,
       metadata: itemData

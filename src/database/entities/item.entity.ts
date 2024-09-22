@@ -18,8 +18,8 @@ export class Item extends BaseEntity {
   @Column({ unique: true })
   url: string;
 
-  @Column({ type: "timestamp", name: "last_control", default: () => "CURRENT_TIMESTAMP" })
-  lastControl: Date;
+  @Column({ name: "scrape_failures", default: 0 })
+  scrapeFailures: number;
 
   @Column({ type: "jsonb" })
   metadata: Record<string, any>;

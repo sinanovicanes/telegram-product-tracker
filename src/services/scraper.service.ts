@@ -11,7 +11,7 @@ export interface ScrapeResult {
 
 @Injectable()
 export class ScraperService {
-  private cluster: Cluster<string, ScrapeResult>;
+  private cluster: Cluster<string, ScrapeResult | null>;
 
   constructor() {
     this.initialize();
@@ -34,7 +34,7 @@ export class ScraperService {
         await page.setUserAgent(userAgent);
 
         return await ZaraScraper.scrape(page, url);
-      } catch {
+      } catch (e) {
         return null;
       }
     });
@@ -46,7 +46,7 @@ export class ScraperService {
     }
   }
 
-  async scrapeMany(urls: string[]): Promise<ScrapeResult[]> {
+  async scrapeMany(urls: string[]): Promise<(ScrapeResult | null)[]> {
     if (!this.cluster) {
       await this.waitForInitialization();
     }
@@ -54,7 +54,7 @@ export class ScraperService {
     return Promise.all(urls.map(url => this.scrape(url)));
   }
 
-  async scrape(url: string): Promise<ScrapeResult> {
+  async scrape(url: string): Promise<ScrapeResult | null> {
     if (!this.cluster) {
       await this.waitForInitialization();
     }

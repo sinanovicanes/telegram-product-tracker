@@ -1,13 +1,9 @@
 import { ScraperError } from "@/errors";
 import type { ScrapeResult } from "@/services";
-import { Logger } from "@app/common/logger";
 import { Page } from "puppeteer";
 
 export class ZaraScraper {
-  private static readonly logger = new Logger(ZaraScraper.name);
-
   static async scrape(page: Page, url: string): Promise<ScrapeResult> {
-    this.logger.log(`Scraping ${url}`);
     await page.goto(url);
 
     const name = await page.$eval(
