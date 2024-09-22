@@ -18,7 +18,7 @@ export class ItemControlSchedule extends Schedule {
     private readonly scraperService: ScraperService
   ) {
     // Run every 30 minutes
-    super("*/30 * * * * *");
+    super("0 */30 * * * *");
   }
 
   async controlItem(item: Item) {
