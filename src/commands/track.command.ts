@@ -1,9 +1,9 @@
 import { ScraperError } from "@/errors";
 import { TrackerService } from "@/services";
+import { ZaraUrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
-import { isURL } from "class-validator";
 import type { Context } from "telegraf";
 
 @Injectable()
@@ -23,14 +23,17 @@ export class TrackCommand extends Command {
       return ctx.reply("Please provide a URL to track.");
     }
 
-    if (!isURL(targetURL)) {
+    const isZaraUrl = ZaraUrlParser.isZaraUrl(targetURL);
+
+    if (!isZaraUrl) {
       return ctx.reply("Please provide a valid URL to track.");
     }
 
+    const itemId = ZaraUrlParser.extractItemId(targetURL);
     const userId = ctx.from.id.toString();
 
     try {
-      await this.trackerService.track(userId, targetURL);
+      await this.trackerService.track(userId, itemId);
       return ctx.reply("You have successfully start tracking the item!");
     } catch (error) {
       if (error instanceof ScraperError) {

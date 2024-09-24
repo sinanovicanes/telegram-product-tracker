@@ -2,6 +2,7 @@ import { itemRepository } from "@/database";
 import type { Item } from "@/database/entities";
 import { Injectable } from "@app/common/decorators";
 import { ScraperService } from "./scraper.service";
+import { ZaraUrlParser } from "@/utils";
 
 @Injectable()
 export class ItemsService {
@@ -17,23 +18,25 @@ export class ItemsService {
     });
   }
 
-  async findItem(url: string): Promise<Item | null> {
+  async findItem(identifier: string): Promise<Item | null> {
     return itemRepository.findOne({
       where: {
-        url
+        identifier
       }
     });
   }
 
-  async createItem(url: string): Promise<Item> {
-    const itemData = await this.scraperService.scrape(url);
+  async createItem(identifier: string): Promise<Item> {
+    const itemData = await this.scraperService.scrape(
+      ZaraUrlParser.getUrlFromItemId(identifier)
+    );
 
     if (!itemData) {
       throw new Error("Failed to scrape item data.");
     }
 
     const item = itemRepository.create({
-      url,
+      identifier,
       metadata: itemData
     });
 
@@ -42,17 +45,17 @@ export class ItemsService {
     return item;
   }
 
-  async getOrCreateItem(url: string): Promise<Item> {
-    let item = await this.findItem(url);
+  async getOrCreateItem(identifier: string): Promise<Item> {
+    let item = await this.findItem(identifier);
 
     if (!item) {
-      item = await this.createItem(url);
+      item = await this.createItem(identifier);
     }
 
     return item;
   }
 
-  async deleteItem(url: string): Promise<void> {
-    await itemRepository.delete({ url });
+  async deleteItem(identifier: string): Promise<void> {
+    await itemRepository.delete({ identifier });
   }
 }

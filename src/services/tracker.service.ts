@@ -10,7 +10,7 @@ export class TrackerService {
     const trackedItems = await trackerRepository.find({
       select: {
         item: {
-          url: true,
+          identifier: true,
           metadata: {
             name: true,
             price: true,
@@ -29,8 +29,8 @@ export class TrackerService {
     return trackedItems.map(tracker => tracker.item);
   }
 
-  async track(userId: string, url: string) {
-    const item = await this.itemsService.getOrCreateItem(url);
+  async track(userId: string, itemIdentifier: string) {
+    const item = await this.itemsService.getOrCreateItem(itemIdentifier);
 
     const tracker = await trackerRepository.insert({
       user: { id: userId },
@@ -40,8 +40,8 @@ export class TrackerService {
     return tracker;
   }
 
-  async untrack(userId: string, url: string) {
-    const item = await this.itemsService.findItem(url);
+  async untrack(userId: string, itemIdentifier: string) {
+    const item = await this.itemsService.findItem(itemIdentifier);
 
     if (!item) {
       return;

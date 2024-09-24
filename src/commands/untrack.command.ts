@@ -1,4 +1,5 @@
 import { TrackerService } from "@/services";
+import { ZaraUrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
@@ -19,17 +20,20 @@ export class UntrackCommand extends Command {
 
     // TODO: Implement a better URL validation
     if (!targetURL) {
-      return ctx.reply("Please provide a URL to untrack.");
+      return ctx.reply("Please provide a URL to track.");
     }
 
-    if (!isURL(targetURL) || !targetURL.startsWith("https://www.zara.com/tr/tr/")) {
-      return ctx.reply("Please provide a valid URL to untrack.");
+    const isZaraUrl = ZaraUrlParser.isZaraUrl(targetURL);
+
+    if (!isZaraUrl) {
+      return ctx.reply("Please provide a valid URL to track.");
     }
 
+    const itemId = ZaraUrlParser.extractItemId(targetURL);
     const userId = ctx.from.id.toString();
 
     try {
-      await this.trackerService.untrack(userId, targetURL);
+      await this.trackerService.untrack(userId, itemId);
       return ctx.reply("You have successfully untracked the item!");
     } catch (error) {
       return ctx.reply(

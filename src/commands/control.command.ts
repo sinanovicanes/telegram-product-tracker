@@ -1,5 +1,6 @@
 import { USER_ROLE, type Item } from "@/database/entities";
 import { ItemsService, ScraperService, type ScrapeResult } from "@/services";
+import { ZaraUrlParser } from "@/utils";
 import { Injectable, Roles } from "@app/common/decorators";
 import { Logger } from "@app/common/logger";
 import { Command } from "@app/common/telegram";
@@ -31,20 +32,21 @@ export class ControlCommand extends Command {
   }
 
   async controlItem(item: Item) {
-    const scrapeResult = await this.scraperService.scrape(item.url);
+    const url = ZaraUrlParser.getUrlFromItemId(item.identifier);
+    const scrapeResult = await this.scraperService.scrape(url);
 
     if (!scrapeResult) {
       if (item.scrapeFailures >= MAX_SCRAPE_FAILURES) {
         this.logger.warn(
-          `Item ${item.url} has reached the maximum number of scrape failures. Removing from database.`
+          `Item ${url} has reached the maximum number of scrape failures. Removing from database.`
         );
 
         this.notifyTrackers(
           item.trackers,
-          `${item.metadata.name} has been removed from the system.\n\n${item.url}`
+          `${item.metadata.name} has been removed from the system.\n\n${url}`
         );
 
-        this.itemsService.deleteItem(item.url);
+        this.itemsService.deleteItem(item.identifier);
         return;
       }
 
@@ -122,7 +124,7 @@ export class ControlCommand extends Command {
       }`;
     }, "");
 
-    const text = `${scrapeResult.name} has been updated. The following fields have changed:\n${changesString}\n\n${item.url}`;
+    const text = `${scrapeResult.name} has been updated. The following fields have changed:\n${changesString}\n\n${url}`;
 
     item.scrapeFailures = 0;
     // Update the item metadata

@@ -16,7 +16,7 @@ export class Item extends BaseEntity {
   id: number;
 
   @Column({ unique: true })
-  url: string;
+  identifier: string;
 
   @Column({ name: "scrape_failures", default: 0 })
   scrapeFailures: number;
