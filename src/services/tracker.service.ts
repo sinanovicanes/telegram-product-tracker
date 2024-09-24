@@ -43,13 +43,14 @@ export class TrackerService {
   async untrack(userId: string, itemIdentifier: string) {
     const item = await this.itemsService.findItem(itemIdentifier);
 
-    if (!item) {
-      return;
-    }
+    if (!item) return;
 
     await trackerRepository.delete({
       user: { id: userId },
       item: { id: item.id }
     });
+
+    // TODO: Add event bus to handle this type of things
+    this.itemsService.ensureTrackers(item.id);
   }
 }

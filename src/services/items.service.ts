@@ -58,4 +58,21 @@ export class ItemsService {
   async deleteItem(identifier: string): Promise<void> {
     await itemRepository.delete({ identifier });
   }
+
+  async ensureTrackers(itemId: number): Promise<void> {
+    const item = await itemRepository.findOne({
+      where: { id: itemId },
+      relations: {
+        trackers: {
+          user: true
+        }
+      }
+    });
+
+    if (!item) return;
+
+    if (item.trackers.length === 0) {
+      await itemRepository.delete({ id: itemId });
+    }
+  }
 }
