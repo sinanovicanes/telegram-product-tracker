@@ -1,4 +1,5 @@
 import { TrackerService } from "@/services";
+import { ZaraUrlParser } from "@/utils";
 import { Cooldown, Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { pluralify } from "@app/common/utils";
@@ -27,7 +28,9 @@ export class TrackListCommand extends Command {
 
     const replies = trackedItems.map(item =>
       ctx.reply(
-        `Name: ${item.metadata.name}\nPrice: ${item.metadata.price}\n\n${item.url}`
+        `Name: ${item.metadata.name}\nPrice: ${
+          item.metadata.price
+        }\n\n${ZaraUrlParser.getUrlFromItemId(item.identifier)}`
       )
     );
 
