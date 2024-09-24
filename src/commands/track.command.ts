@@ -1,5 +1,5 @@
 import { ScraperError } from "@/errors";
-import { ScraperService, TrackerService } from "@/services";
+import { TrackerService } from "@/services";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
@@ -8,10 +8,7 @@ import type { Context } from "telegraf";
 
 @Injectable()
 export class TrackCommand extends Command {
-  constructor(
-    private readonly trackerService: TrackerService,
-    private readonly scraperService: ScraperService
-  ) {
+  constructor(private readonly trackerService: TrackerService) {
     super({
       name: "track",
       description: "Track item"
@@ -30,15 +27,7 @@ export class TrackCommand extends Command {
       return ctx.reply("Please provide a valid URL to track.");
     }
 
-    //@ts-ignore
-    // const screenshot = (await this.scraperService.scrape(targetURL)) as Uint8Array;
-
-    // return ctx.replyWithPhoto({
-    //   source: Buffer.from(screenshot),
-    //   filename: "screenshot.png"
-    // });
-
-    const userId = ctx.from!.id.toString();
+    const userId = ctx.from.id.toString();
 
     try {
       await this.trackerService.track(userId, targetURL);

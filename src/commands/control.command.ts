@@ -24,6 +24,12 @@ export class ControlCommand extends Command {
     });
   }
 
+  async notifyTrackers(trackers: Item["trackers"], text: string) {
+    for (const tracker of trackers) {
+      this.client.telegram.sendMessage(tracker.user.id, text);
+    }
+  }
+
   async controlItem(item: Item) {
     const scrapeResult = await this.scraperService.scrape(item.url);
 
@@ -32,10 +38,17 @@ export class ControlCommand extends Command {
         this.logger.warn(
           `Item ${item.url} has reached the maximum number of scrape failures. Removing from database.`
         );
+
+        this.notifyTrackers(
+          item.trackers,
+          `${item.metadata.name} has been removed from the system.\n\n${item.url}`
+        );
+
         this.itemsService.deleteItem(item.url);
         return;
       }
 
+      // Increment the scrape failures
       item.scrapeFailures++;
       item.save();
 
@@ -72,7 +85,15 @@ export class ControlCommand extends Command {
     }
 
     // Nothing has changed since the last check
-    if (!differences.length) return;
+    if (!differences.length) {
+      // Reset the scrape failures
+      if (item.scrapeFailures > 0) {
+        item.scrapeFailures = 0;
+        await item.save();
+      }
+
+      return;
+    }
 
     const changesString = differences.reduce((acc, curr) => {
       if (typeof scrapeResult[curr] === "object") {
@@ -103,14 +124,13 @@ export class ControlCommand extends Command {
 
     const text = `${scrapeResult.name} has been updated. The following fields have changed:\n${changesString}\n\n${item.url}`;
 
+    item.scrapeFailures = 0;
     // Update the item metadata
     item.metadata = scrapeResult;
     await item.save();
 
     // Notify the trackers
-    for (const tracker of item.trackers) {
-      this.client.telegram.sendMessage(tracker.user.id, text);
-    }
+    this.notifyTrackers(item.trackers, text);
   }
 
   async handler() {

@@ -11,11 +11,11 @@ export class AuthGuard extends Guard {
   }
 
   async canActivate(ctx: ExecutionContext) {
-    const userId = ctx.getCtx().message?.from.id;
+    const userId = ctx.getCtx().from.id.toString();
 
     if (!userId) return false;
 
-    const user = await this.userService.getUser(userId.toString());
+    const user = await this.userService.getUser(userId);
 
     if (!user) return false;
 

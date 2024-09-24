@@ -7,11 +7,11 @@ import type { Context } from "telegraf";
 
 @Injectable()
 @Roles(USER_ROLE.ADMIN)
-export class NewUserCommand extends Command {
+export class RemoveUserCommand extends Command {
   constructor(private readonly userService: UserService) {
     super({
-      name: "newuser",
-      description: "Adds user to the database"
+      name: "removeuser",
+      description: "Removes user from the database"
     });
   }
 
@@ -23,12 +23,10 @@ export class NewUserCommand extends Command {
     }
 
     try {
-      await this.userService.createUser(userId);
-      return await ctx.reply("User has been added to the database");
+      await this.userService.deleteUser(userId);
+      return await ctx.reply("User has been removed from the database");
     } catch (error) {
-      return await ctx.reply(
-        "An error occurred while trying to add the user to the database"
-      );
+      return await ctx.reply("An error occurred while removing user from the database");
     }
   }
 }

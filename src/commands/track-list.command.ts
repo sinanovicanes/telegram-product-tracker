@@ -15,11 +15,9 @@ export class TrackListCommand extends Command {
   }
 
   async handler(ctx: Context) {
-    const userId = ctx.from?.id.toString();
+    const userId = ctx.from.id.toString();
 
-    if (!userId) {
-      return;
-    }
+    if (!userId) return;
 
     const trackedItems = await this.trackerService.getTrackedItems(userId);
 

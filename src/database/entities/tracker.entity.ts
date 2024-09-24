@@ -17,10 +17,10 @@ export class Tracker extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Item)
+  @ManyToOne(() => Item, { onDelete: "CASCADE" })
   item: Relation<Item>;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: "CASCADE" })
   user: Relation<User>;
 
   @CreateDateColumn({ name: "created_at" })

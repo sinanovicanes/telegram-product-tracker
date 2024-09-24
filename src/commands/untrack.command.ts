@@ -26,7 +26,7 @@ export class UntrackCommand extends Command {
       return ctx.reply("Please provide a valid URL to untrack.");
     }
 
-    const userId = ctx.from!.id.toString();
+    const userId = ctx.from.id.toString();
 
     try {
       await this.trackerService.untrack(userId, targetURL);

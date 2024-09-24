@@ -1,6 +1,6 @@
+import { trackerRepository } from "@/database";
 import { Injectable } from "@app/common/decorators";
 import { ItemsService } from "./items.service";
-import { trackerRepository } from "@/database";
 
 @Injectable()
 export class TrackerService {

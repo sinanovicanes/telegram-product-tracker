@@ -35,6 +35,12 @@ export class TelegramClient extends Telegraf {
     await this.commandManager.initialize(this);
     await this.scheduleManager.initialize();
 
+    if (env.NODE_ENV === "development") {
+      return super.launch(() => {
+        this.scheduleManager.start();
+      });
+    }
+
     return super.launch(
       {
         webhook: {
