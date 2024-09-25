@@ -5,7 +5,7 @@ import { Injectable, Roles } from "@app/common/decorators";
 import { Logger } from "@app/common/logger";
 import { Command } from "@app/common/telegram";
 import { TelegramClient } from "@app/common/telegram/client";
-import { capitalize, isEqualObjects } from "@app/common/utils";
+import { capitalize, isEqualObjects, pluralify } from "@app/common/utils";
 
 const MAX_SCRAPE_FAILURES = 3;
 
@@ -151,6 +151,10 @@ export class ControlCommand extends Command {
       await this.controlItem(item);
     }
 
-    this.logger.log(`${items.length} items checked in ${Date.now() - startTime}ms`);
+    this.logger.log(
+      `${items.length} ${pluralify("item", "items", items.length)} checked in ${
+        Date.now() - startTime
+      }ms`
+    );
   }
 }
