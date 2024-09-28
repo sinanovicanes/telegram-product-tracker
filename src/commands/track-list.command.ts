@@ -28,7 +28,7 @@ export class TrackListCommand extends Command {
 
     const replies = trackedItems.map(item =>
       ctx.reply(
-        `Name: ${item.metadata.name}\nPrice: ${
+        `Name: ${item.metadata.name}\nMerchant: ${item.brand}\nPrice: ${
           item.metadata.price
         }\n\n${UrlParser.getUrlFromItem(item)}`
       )

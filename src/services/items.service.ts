@@ -38,6 +38,7 @@ export class ItemsService {
 
     const item = itemRepository.create({
       identifier,
+      brand,
       metadata: itemData
     });
 

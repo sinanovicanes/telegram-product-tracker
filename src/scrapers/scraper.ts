@@ -14,23 +14,46 @@ export class Scraper {
     return await this.page.$eval(selector, el => el.textContent.trim());
   }
 
-  protected async getTextContentFromShadowDOM(
+  protected async getTextContentFromNestedShadowDOM(
+    shadowRootSelectors: string[], // Array of shadow root selectors for nested traversal
     selector: string,
-    shadowRootSelector: string
-  ): Promise<string> {
-    await this.page.waitForSelector(selector);
+    selectAll = false
+  ): Promise<string | string[]> {
+    // Ensure the first shadow root host exists
+    await this.page.waitForSelector(shadowRootSelectors[0]);
 
     return await this.page.$eval(
-      selector,
-      (el, shadowRootSelector) => {
-        const shadowRoot = el.shadowRoot;
-        if (!shadowRoot) {
-          throw new Error("Shadow DOM not found");
+      shadowRootSelectors[0],
+      (el, shadowRootSelectors, selector, selectAll) => {
+        // Recursive function to traverse nested shadow roots
+        const getShadowElement = (element: Element, selectors: string[]): Element => {
+          if (!selectors.length) return element;
+          const nextShadowHost = element.shadowRoot?.querySelector(selectors[0]);
+          if (!nextShadowHost || !nextShadowHost.shadowRoot) {
+            throw new Error(`Shadow DOM not found for selector: ${selectors[0]}`);
+          }
+          return getShadowElement(nextShadowHost, selectors.slice(1)); // Recurse deeper
+        };
+
+        // Traverse nested shadow roots
+        const finalShadowElement = getShadowElement(el, shadowRootSelectors.slice(1)); // Slice to skip the first, as it's already passed
+
+        if (selectAll) {
+          return Array.from(finalShadowElement.shadowRoot.querySelectorAll(selector)).map(
+            el => el.textContent?.trim() || ""
+          );
         }
 
-        return shadowRoot.querySelector(shadowRootSelector).textContent.trim();
+        const targetElement = finalShadowElement.shadowRoot.querySelector(selector);
+        if (!targetElement) {
+          throw new Error(`Element with selector '${selector}' not found in shadow DOM`);
+        }
+
+        return targetElement.textContent?.trim() || "";
       },
-      shadowRootSelector
+      shadowRootSelectors,
+      selector,
+      selectAll
     );
   }
 

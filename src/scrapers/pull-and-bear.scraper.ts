@@ -8,19 +8,15 @@ export class PullAndBearScraper extends Scraper {
 
     const name = await this.getTextContent(".c-product-info--header #titleProductCard");
     const price = await this.getTextContent(".c-product-info--header .number");
-
-    console.log(price);
-
-    await this.takeScreenshot();
-
-    await this.page.waitForSelector(".size-list-select");
-
-    const sizes = await this.page.$$eval(
-      ".size-list-select .size-list .size:not(.is-disabled) .name",
-      els => els.map(el => el.textContent)
-    );
-
-    console.log(name, price, sizes);
+    const sizes = (await this.getTextContentFromNestedShadowDOM(
+      [
+        "#productCard > div > div > div.c-product-info--size > size-selector-with-length",
+        "size-selector-select",
+        "div > div.size-list-select > size-list"
+      ],
+      "button:not(.is-disabled) .name",
+      true
+    )) as string[];
 
     if (!name || !price) {
       throw new ScraperError(PullAndBearScraper);
