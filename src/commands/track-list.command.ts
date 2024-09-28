@@ -1,5 +1,5 @@
 import { TrackerService } from "@/services";
-import { ZaraUrlParser } from "@/utils";
+import { UrlParser } from "@/utils";
 import { Cooldown, Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { pluralify } from "@app/common/utils";
@@ -30,7 +30,7 @@ export class TrackListCommand extends Command {
       ctx.reply(
         `Name: ${item.metadata.name}\nPrice: ${
           item.metadata.price
-        }\n\n${ZaraUrlParser.getUrlFromItemId(item.identifier)}`
+        }\n\n${UrlParser.getUrlFromItem(item)}`
       )
     );
 

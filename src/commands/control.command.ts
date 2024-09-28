@@ -1,6 +1,6 @@
 import { USER_ROLE, type Item } from "@/database/entities";
 import { ItemsService, ScraperService, type ScrapeResult } from "@/services";
-import { ZaraUrlParser } from "@/utils";
+import { UrlParser } from "@/utils";
 import { Injectable, Roles } from "@app/common/decorators";
 import { Logger } from "@app/common/logger";
 import { Command } from "@app/common/telegram";
@@ -32,7 +32,7 @@ export class ControlCommand extends Command {
   }
 
   async controlItem(item: Item) {
-    const url = ZaraUrlParser.getUrlFromItemId(item.identifier);
+    const url = UrlParser.getUrlFromItemId(item.brand, item.identifier);
     const scrapeResult = await this.scraperService.scrape(url);
 
     if (!scrapeResult) {

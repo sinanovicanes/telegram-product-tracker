@@ -2,7 +2,8 @@ import { itemRepository } from "@/database";
 import type { Item } from "@/database/entities";
 import { Injectable } from "@app/common/decorators";
 import { ScraperService } from "./scraper.service";
-import { ZaraUrlParser } from "@/utils";
+import { UrlParser } from "@/utils";
+import type { BRAND } from "@/enums";
 
 @Injectable()
 export class ItemsService {
@@ -26,9 +27,9 @@ export class ItemsService {
     });
   }
 
-  async createItem(identifier: string): Promise<Item> {
+  async createItem(brand: BRAND, identifier: string): Promise<Item> {
     const itemData = await this.scraperService.scrape(
-      ZaraUrlParser.getUrlFromItemId(identifier)
+      UrlParser.getUrlFromItemId(brand, identifier)
     );
 
     if (!itemData) {
@@ -45,11 +46,18 @@ export class ItemsService {
     return item;
   }
 
-  async getOrCreateItem(identifier: string): Promise<Item> {
+  async getOrCreateItem(url: string): Promise<Item> {
+    const identifier = UrlParser.extractItemId(url);
+
+    if (!identifier) {
+      throw new Error("Failed to extract item ID.");
+    }
+
     let item = await this.findItem(identifier);
 
     if (!item) {
-      item = await this.createItem(identifier);
+      const brand = UrlParser.getBrandFromUrl(url);
+      item = await this.createItem(brand, identifier);
     }
 
     return item;
@@ -63,9 +71,7 @@ export class ItemsService {
     const item = await itemRepository.findOne({
       where: { id: itemId },
       relations: {
-        trackers: {
-          user: true
-        }
+        trackers: {}
       }
     });
 

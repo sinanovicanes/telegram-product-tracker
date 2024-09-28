@@ -29,8 +29,8 @@ export class TrackerService {
     return trackedItems.map(tracker => tracker.item);
   }
 
-  async track(userId: string, itemIdentifier: string) {
-    const item = await this.itemsService.getOrCreateItem(itemIdentifier);
+  async track(userId: string, url: string) {
+    const item = await this.itemsService.getOrCreateItem(url);
 
     const tracker = await trackerRepository.insert({
       user: { id: userId },

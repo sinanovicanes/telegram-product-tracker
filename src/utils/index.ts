@@ -1,1 +1,1 @@
-export * from "./zara-url-parser";
+export * from "./url-parser";

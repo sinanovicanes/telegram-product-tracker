@@ -1,6 +1,6 @@
 import { ScraperError } from "@/errors";
 import { TrackerService } from "@/services";
-import { ZaraUrlParser } from "@/utils";
+import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
 import { Command } from "@app/common/telegram";
 import { getCommandArgsFromRawText } from "@app/common/utils";
@@ -16,24 +16,27 @@ export class TrackCommand extends Command {
   }
 
   async handler(ctx: Context) {
-    const [targetURL] = getCommandArgsFromRawText(ctx.text ?? "");
+    const [url] = getCommandArgsFromRawText(ctx.text ?? "");
 
     // TODO: Implement a better URL validation
-    if (!targetURL) {
+    if (!url) {
       return ctx.reply("Please provide a URL to track.");
     }
 
-    const isZaraUrl = ZaraUrlParser.isZaraUrl(targetURL);
-
-    if (!isZaraUrl) {
+    if (!UrlParser.isValidUrl(url)) {
       return ctx.reply("Please provide a valid URL to track.");
     }
 
-    const itemId = ZaraUrlParser.extractItemId(targetURL);
+    const itemId = UrlParser.extractItemId(url);
+
+    if (!itemId) {
+      return ctx.reply("An error occurred while extracting item ID.");
+    }
+
     const userId = ctx.from.id.toString();
 
     try {
-      await this.trackerService.track(userId, itemId);
+      await this.trackerService.track(userId, url);
       return ctx.reply("You have successfully start tracking the item!");
     } catch (error) {
       if (error instanceof ScraperError) {

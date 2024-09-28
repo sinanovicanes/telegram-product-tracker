@@ -1,4 +1,6 @@
-import { ZaraScraper } from "@/scrapers";
+import { BRAND } from "@/enums";
+import { PullAndBearScraper, ZaraScraper } from "@/scrapers";
+import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
 import { delay, getRandomUserAgent } from "@app/common/utils";
 import { Cluster } from "puppeteer-cluster";
@@ -40,11 +42,22 @@ export class ScraperService {
 
     this.cluster.task(async ({ page, data: url }) => {
       try {
+        await page.setViewport({ width: 1920, height: 1080 });
         await page.setUserAgent(
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.96 Safari/537.36"
         );
 
-        return await ZaraScraper.scrape(page, url);
+        const brand = UrlParser.getBrandFromUrl(url);
+
+        switch (brand) {
+          case BRAND.ZARA:
+            return await new ZaraScraper(page, url).scrape();
+          case BRAND.PULL_AND_BEAR:
+            return await new PullAndBearScraper(page, url).scrape();
+          default:
+            console.error("Invalid url to scrape:", url);
+            return null;
+        }
       } catch (e) {
         console.error(e);
         return null;

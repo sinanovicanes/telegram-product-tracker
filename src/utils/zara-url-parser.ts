@@ -1,5 +1,5 @@
 export namespace ZaraUrlParser {
-  export function isZaraUrl(url: string): boolean {
+  export function isValidUrl(url: string): boolean {
     return url.startsWith("https://www.zara.com/");
   }
 

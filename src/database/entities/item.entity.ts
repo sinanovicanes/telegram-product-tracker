@@ -9,11 +9,15 @@ import {
   type Relation
 } from "typeorm";
 import { Tracker } from "./tracker.entity";
+import { BRAND } from "@/enums";
 
 @Entity()
 export class Item extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ name: "brand", type: "enum", enum: BRAND })
+  brand: BRAND;
 
   @Column({ unique: true })
   identifier: string;
