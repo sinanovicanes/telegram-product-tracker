@@ -5,7 +5,6 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
   type Relation
 } from "typeorm";
 import { Item } from "./item.entity";
@@ -25,7 +24,4 @@ export class Tracker extends BaseEntity {
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
-
-  @UpdateDateColumn({ name: "updated_at" })
-  updatedAt: Date;
 }
