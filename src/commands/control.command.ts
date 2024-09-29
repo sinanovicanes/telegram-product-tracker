@@ -145,9 +145,7 @@ export class ControlCommand extends Command {
 
     const startTime = Date.now();
 
-    for (const product of products) {
-      await this.controlProduct(product);
-    }
+    await Promise.all(products.map(product => this.controlProduct(product)));
 
     this.logger.log(
       `${products.length} ${pluralify(

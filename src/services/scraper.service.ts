@@ -2,7 +2,6 @@ import { MERCHANT } from "@/enums";
 import { PullAndBearScraper, ZaraScraper } from "@/scrapers";
 import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
-import { delay, getRandomUserAgent } from "@app/common/utils";
 import { Cluster } from "puppeteer-cluster";
 
 export interface ScrapeResult {
@@ -25,8 +24,8 @@ export class ScraperService {
     if (this.cluster) return;
 
     this.cluster = await Cluster.launch({
-      concurrency: Cluster.CONCURRENCY_CONTEXT,
-      maxConcurrency: 5,
+      concurrency: Cluster.CONCURRENCY_BROWSER,
+      maxConcurrency: 2,
       puppeteerOptions: {
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
         headless: true,
@@ -40,7 +39,7 @@ export class ScraperService {
       }
     });
 
-    this.cluster.task(async ({ page, data: url }) => {
+    await this.cluster.task(async ({ page, data: url }) => {
       try {
         await page.setViewport({ width: 1920, height: 1080 });
         await page.setUserAgent(
@@ -61,6 +60,8 @@ export class ScraperService {
       } catch (e) {
         console.error(e);
         return null;
+      } finally {
+        this.closeCluster();
       }
     });
   }
@@ -87,10 +88,6 @@ export class ScraperService {
   async scrape(url: string): Promise<ScrapeResult | null> {
     await this.initialize();
 
-    const result = await this.cluster.execute(url);
-
-    this.closeCluster();
-
-    return result;
+    return this.cluster.execute(url);
   }
 }
