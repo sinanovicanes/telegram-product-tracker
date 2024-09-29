@@ -1,5 +1,5 @@
 {
-  "name": "telegram-bot",
+  "name": "telegram-product-tracker",
   "module": "index.ts",
   "type": "module",
   "scripts": {
