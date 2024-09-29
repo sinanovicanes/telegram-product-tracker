@@ -7,17 +7,17 @@ import {
   PrimaryGeneratedColumn,
   type Relation
 } from "typeorm";
-import { Item } from "./item.entity";
+import { Product } from "./product.entity";
 import { User } from "./user.entity";
 
 @Entity({ name: "trackers" })
-@Index(["item", "user"], { unique: true })
+@Index(["product", "user"], { unique: true })
 export class Tracker extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Item, { onDelete: "CASCADE" })
-  item: Relation<Item>;
+  @ManyToOne(() => Product, { onDelete: "CASCADE" })
+  product: Relation<Product>;
 
   @ManyToOne(() => User, { onDelete: "CASCADE" })
   user: Relation<User>;

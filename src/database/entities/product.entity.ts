@@ -11,8 +11,8 @@ import {
 import { Tracker } from "./tracker.entity";
 import { BRAND } from "@/enums";
 
-@Entity({ name: "items" })
-export class Item extends BaseEntity {
+@Entity({ name: "products" })
+export class Product extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,6 +34,6 @@ export class Item extends BaseEntity {
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
-  @OneToMany(() => Tracker, tracker => tracker.item)
+  @OneToMany(() => Tracker, tracker => tracker.product)
   trackers: Relation<Tracker[]>;
 }

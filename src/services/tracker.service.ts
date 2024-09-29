@@ -1,15 +1,15 @@
 import { trackerRepository } from "@/database";
 import { Injectable } from "@app/common/decorators";
-import { ItemsService } from "./items.service";
+import { ProductService } from "./product.service";
 
 @Injectable()
 export class TrackerService {
-  constructor(private readonly itemsService: ItemsService) {}
+  constructor(private readonly productService: ProductService) {}
 
-  async getTrackedItems(userId: string) {
-    const trackedItems = await trackerRepository.find({
+  async getTrackedProducts(userId: string) {
+    const trackedProducts = await trackerRepository.find({
       select: {
-        item: {
+        product: {
           identifier: true,
           brand: true,
           metadata: {
@@ -23,35 +23,35 @@ export class TrackerService {
         user: { id: userId }
       },
       relations: {
-        item: true
+        product: true
       }
     });
 
-    return trackedItems.map(tracker => tracker.item);
+    return trackedProducts.map(tracker => tracker.product);
   }
 
   async track(userId: string, url: string) {
-    const item = await this.itemsService.getOrCreateItem(url);
+    const product = await this.productService.getOrCreate(url);
 
     const tracker = await trackerRepository.insert({
       user: { id: userId },
-      item: { id: item.id }
+      product: { id: product.id }
     });
 
     return tracker;
   }
 
-  async untrack(userId: string, itemIdentifier: string) {
-    const item = await this.itemsService.findItem(itemIdentifier);
+  async untrack(userId: string, productIdentifier: string) {
+    const product = await this.productService.findOne(productIdentifier);
 
-    if (!item) return;
+    if (!product) return;
 
     await trackerRepository.delete({
       user: { id: userId },
-      item: { id: item.id }
+      product: { id: product.id }
     });
 
     // TODO: Add event bus to handle this type of things
-    this.itemsService.ensureTrackers(item.id);
+    this.productService.ensureTrackers(product.id);
   }
 }

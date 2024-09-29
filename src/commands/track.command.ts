@@ -11,7 +11,7 @@ export class TrackCommand extends Command {
   constructor(private readonly trackerService: TrackerService) {
     super({
       name: "track",
-      description: "Track item"
+      description: "Track product"
     });
   }
 
@@ -27,30 +27,29 @@ export class TrackCommand extends Command {
       return ctx.reply("Please provide a valid URL to track.");
     }
 
-    const itemId = UrlParser.extractItemId(url);
+    const productId = UrlParser.extractProductId(url);
 
-    if (!itemId) {
-      return ctx.reply("An error occurred while extracting item ID.");
+    if (!productId) {
+      return ctx.reply("An error occurred while extracting product ID.");
     }
 
     const userId = ctx.from.id.toString();
 
     try {
       await this.trackerService.track(userId, url);
-      return ctx.reply("You have successfully start tracking the item!");
+      return ctx.reply("You have successfully start tracking the product!");
     } catch (error) {
       if (error instanceof ScraperError) {
-        return ctx.reply("An error occurred while retrieving item data.");
+        return ctx.reply("An error occurred while retrieving product data.");
       }
 
       // TODO: Implement a better error handling
       // Duplicate key error code
       if (typeof error == "object" && "code" in error && error.code === "23505") {
-        return ctx.reply("You are already tracking this item.");
+        return ctx.reply("You are already tracking this product.");
       }
 
-      return ctx.reply(`${error}`);
-      // return ctx.reply("An error occurred while trying to track the item.");
+      return ctx.reply("An error occurred while trying to track the product.");
     }
   }
 }

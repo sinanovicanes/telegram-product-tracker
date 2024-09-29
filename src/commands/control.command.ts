@@ -1,5 +1,5 @@
-import { USER_ROLE, type Item } from "@/database/entities";
-import { ItemsService, ScraperService, type ScrapeResult } from "@/services";
+import { USER_ROLE, type Product } from "@/database/entities";
+import { ProductService, ScraperService, type ScrapeResult } from "@/services";
 import { UrlParser } from "@/utils";
 import { Injectable, Roles } from "@app/common/decorators";
 import { Logger } from "@app/common/logger";
@@ -16,53 +16,53 @@ export class ControlCommand extends Command {
 
   constructor(
     private readonly client: TelegramClient,
-    private readonly itemsService: ItemsService,
+    private readonly productService: ProductService,
     private readonly scraperService: ScraperService
   ) {
     super({
       name: "control",
-      description: "Control items"
+      description: "Control products"
     });
   }
 
-  async notifyTrackers(trackers: Item["trackers"], text: string) {
+  async notifyTrackers(trackers: Product["trackers"], text: string) {
     for (const tracker of trackers) {
       this.client.telegram.sendMessage(tracker.user.id, text);
     }
   }
 
-  async controlItem(item: Item) {
-    const url = UrlParser.getUrlFromItemId(item.brand, item.identifier);
+  async controlProduct(product: Product) {
+    const url = UrlParser.getUrlFromProductId(product.brand, product.identifier);
     const scrapeResult = await this.scraperService.scrape(url);
 
     if (!scrapeResult) {
-      if (item.scrapeFailures >= MAX_SCRAPE_FAILURES) {
+      if (product.scrapeFailures >= MAX_SCRAPE_FAILURES) {
         this.logger.warn(
-          `Item ${url} has reached the maximum number of scrape failures. Removing from database.`
+          `Product ${url} has reached the maximum number of scrape failures. Removing from database.`
         );
 
         this.notifyTrackers(
-          item.trackers,
-          `${item.metadata.name} has been removed from the system.\n\n${url}`
+          product.trackers,
+          `${product.metadata.name} has been removed from the system.\n\n${url}`
         );
 
-        this.itemsService.deleteItem(item.identifier);
+        this.productService.delete(product.identifier);
         return;
       }
 
       // Increment the scrape failures
-      item.scrapeFailures++;
-      item.save();
+      product.scrapeFailures++;
+      product.save();
 
       return;
     }
 
     const differences: (keyof ScrapeResult)[] = [];
 
-    // Compare the item data with the metadata
+    // Compare the old scrape result data with the new one
     for (const key in scrapeResult) {
       const type = typeof scrapeResult[key as keyof typeof scrapeResult];
-      const type2 = typeof item.metadata[key];
+      const type2 = typeof product.metadata[key];
 
       if (type != type2) {
         differences.push(key as keyof ScrapeResult);
@@ -73,7 +73,7 @@ export class ControlCommand extends Command {
         if (
           !isEqualObjects(
             scrapeResult[key as keyof typeof scrapeResult] as Object,
-            item.metadata[key]
+            product.metadata[key]
           )
         ) {
           differences.push(key as keyof ScrapeResult);
@@ -81,7 +81,7 @@ export class ControlCommand extends Command {
         continue;
       }
 
-      if (scrapeResult[key as keyof ScrapeResult] != item.metadata[key]) {
+      if (scrapeResult[key as keyof ScrapeResult] != product.metadata[key]) {
         differences.push(key as keyof ScrapeResult);
       }
     }
@@ -89,9 +89,9 @@ export class ControlCommand extends Command {
     // Nothing has changed since the last check
     if (!differences.length) {
       // Reset the scrape failures
-      if (item.scrapeFailures > 0) {
-        item.scrapeFailures = 0;
-        await item.save();
+      if (product.scrapeFailures > 0) {
+        product.scrapeFailures = 0;
+        await product.save();
       }
 
       return;
@@ -100,7 +100,7 @@ export class ControlCommand extends Command {
     const changesString = differences.reduce((acc, curr) => {
       if (typeof scrapeResult[curr] === "object") {
         if (curr === "sizes") {
-          const oldSizes: string[] = item.metadata[curr];
+          const oldSizes: string[] = product.metadata[curr];
           const newSizes: string[] = scrapeResult[curr];
           const addedSizes = newSizes.filter(size => !oldSizes.includes(size));
           const removedSizes = oldSizes.filter(size => !newSizes.includes(size));
@@ -119,42 +119,42 @@ export class ControlCommand extends Command {
         return `${acc}\n${capitalize(curr)}`;
       }
 
-      return `${acc}\n${capitalize(curr)}: ${item.metadata[curr]} -> ${
+      return `${acc}\n${capitalize(curr)}: ${product.metadata[curr]} -> ${
         scrapeResult[curr as keyof typeof scrapeResult]
       }`;
     }, "");
 
     const text = `${scrapeResult.name} has been updated. The following fields have changed:\n${changesString}\n\n${url}`;
 
-    item.scrapeFailures = 0;
-    // Update the item metadata
-    item.metadata = scrapeResult;
-    await item.save();
+    product.scrapeFailures = 0;
+    // Update the product metadata
+    product.metadata = scrapeResult;
+    await product.save();
 
     // Notify the trackers
-    this.notifyTrackers(item.trackers, text);
+    this.notifyTrackers(product.trackers, text);
   }
 
   async handler() {
     this.logger.log("Control command received");
-    const items = await this.itemsService.getItems();
+    const products = await this.productService.getAll();
 
-    this.logger.log(`Checking ${items.length} items`);
+    this.logger.log(`Checking ${products.length} products`);
 
-    if (!items.length) return;
+    if (!products.length) return;
 
     const startTime = Date.now();
 
-    // await Promise.all(items.map((item, i) => this.controlItem(item)));
-
-    for (const item of items) {
-      await this.controlItem(item);
+    for (const product of products) {
+      await this.controlProduct(product);
     }
 
     this.logger.log(
-      `${items.length} ${pluralify("item", "items", items.length)} checked in ${
-        Date.now() - startTime
-      }ms`
+      `${products.length} ${pluralify(
+        "product",
+        "products",
+        products.length
+      )} checked in ${Date.now() - startTime}ms`
     );
   }
 }

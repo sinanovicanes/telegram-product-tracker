@@ -10,7 +10,7 @@ export class UntrackCommand extends Command {
   constructor(private readonly trackerService: TrackerService) {
     super({
       name: "untrack",
-      description: "Untrack the item"
+      description: "Untrack the product"
     });
   }
 
@@ -26,20 +26,20 @@ export class UntrackCommand extends Command {
       return ctx.reply("Please provide a valid URL to track.");
     }
 
-    const itemId = UrlParser.extractItemId(url);
+    const productId = UrlParser.extractProductId(url);
 
-    if (!itemId) {
-      return ctx.reply("An error occurred while extracting item ID.");
+    if (!productId) {
+      return ctx.reply("An error occurred while extracting product ID.");
     }
 
     const userId = ctx.from.id.toString();
 
     try {
-      await this.trackerService.untrack(userId, itemId);
-      return ctx.reply("You have successfully untracked the item!");
+      await this.trackerService.untrack(userId, productId);
+      return ctx.reply("You have successfully untracked the product!");
     } catch (error) {
       return ctx.reply(
-        "An error occurred while trying to untracking the item. Maybe you are not tracking this item."
+        "An error occurred while trying to untracking the product. Maybe you are not tracking this product."
       );
     }
   }

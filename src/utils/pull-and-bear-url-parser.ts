@@ -3,11 +3,11 @@ export namespace PullAndBearUrlParser {
     return url.startsWith("https://www.pullandbear.com/");
   }
 
-  export function extractItemId(url: string): string {
+  export function extractProductId(url: string): string {
     return new URL(url).pathname.split("/").pop() ?? "";
   }
 
-  export function getUrlFromItemId(itemId: string): string {
-    return `https://www.pullandbear.com/tr/${itemId}`;
+  export function getUrlFromProductId(productId: string): string {
+    return `https://www.pullandbear.com/tr/${productId}`;
   }
 }

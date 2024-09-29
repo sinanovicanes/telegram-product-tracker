@@ -11,7 +11,7 @@ export class TrackListCommand extends Command {
   constructor(private readonly trackerService: TrackerService) {
     super({
       name: "tracklist",
-      description: "Returns the list of items you're tracking."
+      description: "Returns the list of products you are tracking."
     });
   }
 
@@ -20,27 +20,27 @@ export class TrackListCommand extends Command {
 
     if (!userId) return;
 
-    const trackedItems = await this.trackerService.getTrackedItems(userId);
+    const trackedProducts = await this.trackerService.getTrackedProducts(userId);
 
-    if (!trackedItems.length) {
-      return await ctx.reply("You are not tracking any items.");
+    if (!trackedProducts.length) {
+      return await ctx.reply("You are not tracking any products.");
     }
 
-    const replies = trackedItems.map(item =>
+    const replies = trackedProducts.map(product =>
       ctx.reply(
-        `Name: ${item.metadata.name}\nMerchant: ${item.brand}\nPrice: ${
-          item.metadata.price
-        }\n\n${UrlParser.getUrlFromItem(item)}`
+        `Name: ${product.metadata.name}\nMerchant: ${product.brand}\nPrice: ${
+          product.metadata.price
+        }\n\n${UrlParser.getUrlFromProduct(product)}`
       )
     );
 
     await Promise.all(replies);
 
     await ctx.reply(
-      `You are currently tracking ${trackedItems.length} ${pluralify(
-        "item",
-        "items",
-        trackedItems.length
+      `You are currently tracking ${trackedProducts.length} ${pluralify(
+        "product",
+        "products",
+        trackedProducts.length
       )}.`
     );
   }

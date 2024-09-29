@@ -3,11 +3,11 @@ export namespace ZaraUrlParser {
     return url.startsWith("https://www.zara.com/");
   }
 
-  export function extractItemId(url: string): string {
+  export function extractProductId(url: string): string {
     return (new URL(url).pathname.split("/").pop() ?? "").replace(".html", "");
   }
 
-  export function getUrlFromItemId(itemId: string): string {
-    return `https://www.zara.com/tr/tr/${itemId}.html`;
+  export function getUrlFromProductId(productId: string): string {
+    return `https://www.zara.com/tr/tr/${productId}.html`;
   }
 }
