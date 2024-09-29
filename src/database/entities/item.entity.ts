@@ -11,7 +11,7 @@ import {
 import { Tracker } from "./tracker.entity";
 import { BRAND } from "@/enums";
 
-@Entity()
+@Entity({ name: "items" })
 export class Item extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;

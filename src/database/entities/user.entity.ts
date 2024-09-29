@@ -15,7 +15,7 @@ export enum USER_ROLE {
   USER = "user"
 }
 
-@Entity()
+@Entity({ name: "users" })
 export class User extends BaseEntity {
   @PrimaryColumn()
   id: string;

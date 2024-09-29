@@ -10,7 +10,7 @@ import {
 import { Item } from "./item.entity";
 import { User } from "./user.entity";
 
-@Entity()
+@Entity({ name: "trackers" })
 @Index(["item", "user"], { unique: true })
 export class Tracker extends BaseEntity {
   @PrimaryGeneratedColumn()
