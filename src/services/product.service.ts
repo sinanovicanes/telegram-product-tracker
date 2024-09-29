@@ -3,7 +3,7 @@ import type { Product } from "@/database/entities";
 import { Injectable } from "@app/common/decorators";
 import { ScraperService } from "./scraper.service";
 import { UrlParser } from "@/utils";
-import type { BRAND } from "@/enums";
+import type { MERCHANT } from "@/enums";
 
 @Injectable()
 export class ProductService {
@@ -27,9 +27,9 @@ export class ProductService {
     });
   }
 
-  async create(brand: BRAND, identifier: string): Promise<Product> {
+  async create(merchant: MERCHANT, identifier: string): Promise<Product> {
     const metadata = await this.scraperService.scrape(
-      UrlParser.getUrlFromProductId(brand, identifier)
+      UrlParser.getUrlFromProductId(merchant, identifier)
     );
 
     if (!metadata) {
@@ -38,7 +38,7 @@ export class ProductService {
 
     const product = productRepository.create({
       identifier,
-      brand,
+      merchant: merchant,
       metadata
     });
 
@@ -57,8 +57,8 @@ export class ProductService {
     let product = await this.findOne(identifier);
 
     if (!product) {
-      const brand = UrlParser.getBrandFromUrl(url);
-      product = await this.create(brand, identifier);
+      const merchant = UrlParser.getMerchantFromUrl(url);
+      product = await this.create(merchant, identifier);
     }
 
     return product;

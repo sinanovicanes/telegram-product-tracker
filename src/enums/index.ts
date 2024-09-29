@@ -1,1 +1,1 @@
-export * from "./brands";
+export * from "./merchant.enum";

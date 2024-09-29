@@ -32,7 +32,7 @@ export class ControlCommand extends Command {
   }
 
   async controlProduct(product: Product) {
-    const url = UrlParser.getUrlFromProductId(product.brand, product.identifier);
+    const url = UrlParser.getUrlFromProductId(product.merchant, product.identifier);
     const scrapeResult = await this.scraperService.scrape(url);
 
     if (!scrapeResult) {

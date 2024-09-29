@@ -1,4 +1,4 @@
-import { BRAND } from "@/enums";
+import { MERCHANT } from "@/enums";
 import { PullAndBearUrlParser } from "./pull-and-bear-url-parser";
 import { ZaraUrlParser } from "./zara-url-parser";
 import type { Product } from "@/database/entities";
@@ -8,36 +8,36 @@ export namespace UrlParser {
     return ZaraUrlParser.isValidUrl(url) || PullAndBearUrlParser.isValidUrl(url);
   }
 
-  export function getBrandFromUrl(url: string): BRAND | null {
+  export function getMerchantFromUrl(url: string): MERCHANT | null {
     if (ZaraUrlParser.isValidUrl(url)) {
-      return BRAND.ZARA;
+      return MERCHANT.ZARA;
     }
 
     if (PullAndBearUrlParser.isValidUrl(url)) {
-      return BRAND.PULL_AND_BEAR;
+      return MERCHANT.PULL_AND_BEAR;
     }
 
     return null;
   }
 
   export function extractProductId(url: string): string | null {
-    const brand = getBrandFromUrl(url);
+    const merchant = getMerchantFromUrl(url);
 
-    switch (brand) {
-      case BRAND.ZARA:
+    switch (merchant) {
+      case MERCHANT.ZARA:
         return ZaraUrlParser.extractProductId(url);
-      case BRAND.PULL_AND_BEAR:
+      case MERCHANT.PULL_AND_BEAR:
         return PullAndBearUrlParser.extractProductId(url);
       default:
         return null;
     }
   }
 
-  export function getUrlFromProductId(brand: BRAND, productId: string): string {
-    switch (brand) {
-      case BRAND.ZARA:
+  export function getUrlFromProductId(merchant: MERCHANT, productId: string): string {
+    switch (merchant) {
+      case MERCHANT.ZARA:
         return ZaraUrlParser.getUrlFromProductId(productId);
-      case BRAND.PULL_AND_BEAR:
+      case MERCHANT.PULL_AND_BEAR:
         return PullAndBearUrlParser.getUrlFromProductId(productId);
       default:
         return null;
@@ -45,6 +45,6 @@ export namespace UrlParser {
   }
 
   export function getUrlFromProduct(product: Product): string {
-    return getUrlFromProductId(product.brand, product.identifier);
+    return getUrlFromProductId(product.merchant, product.identifier);
   }
 }

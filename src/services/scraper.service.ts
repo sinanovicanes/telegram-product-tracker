@@ -1,4 +1,4 @@
-import { BRAND } from "@/enums";
+import { MERCHANT } from "@/enums";
 import { PullAndBearScraper, ZaraScraper } from "@/scrapers";
 import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
@@ -47,12 +47,12 @@ export class ScraperService {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.96 Safari/537.36"
         );
 
-        const brand = UrlParser.getBrandFromUrl(url);
+        const merchant = UrlParser.getMerchantFromUrl(url);
 
-        switch (brand) {
-          case BRAND.ZARA:
+        switch (merchant) {
+          case MERCHANT.ZARA:
             return await new ZaraScraper(page, url).scrape();
-          case BRAND.PULL_AND_BEAR:
+          case MERCHANT.PULL_AND_BEAR:
             return await new PullAndBearScraper(page, url).scrape();
           default:
             console.error("Invalid url to scrape:", url);

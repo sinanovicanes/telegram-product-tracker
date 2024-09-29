@@ -11,7 +11,7 @@ export class TrackerService {
       select: {
         product: {
           identifier: true,
-          brand: true,
+          merchant: true,
           metadata: {
             name: true,
             price: true,
