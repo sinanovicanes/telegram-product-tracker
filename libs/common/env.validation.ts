@@ -12,6 +12,8 @@ declare module "bun" {
     DATABASE_NAME: string;
     DATABASE_PORT: number;
     DATABASE_URL: string;
+    SCRAPER_CONCURRENCY: number;
+    MAX_SCRAPE_FAILURES: number;
   }
 }
 
@@ -33,7 +35,9 @@ const envSchema = z.object({
   DATABASE_PASSWORD: z.string(),
   DATABASE_NAME: z.string(),
   DATABASE_PORT: z.number({ coerce: true }),
-  DATABASE_URL: z.string()
+  DATABASE_URL: z.string(),
+  SCRAPER_CONCURRENCY: z.number({ coerce: true }).default(3),
+  MAX_SCRAPE_FAILURES: z.number({ coerce: true }).default(10)
 });
 
 export const env = envSchema.parse(process.env);

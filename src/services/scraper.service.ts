@@ -2,6 +2,7 @@ import { MERCHANT } from "@/enums";
 import { PullAndBearScraper, ZaraScraper } from "@/scrapers";
 import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
+import { env } from "@app/common/env.validation";
 import { Cluster } from "puppeteer-cluster";
 
 export interface ScrapeResult {
@@ -25,7 +26,7 @@ export class ScraperService {
 
     this.cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_BROWSER,
-      maxConcurrency: 2,
+      maxConcurrency: env.SCRAPER_CONCURRENCY,
       puppeteerOptions: {
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
         headless: true,

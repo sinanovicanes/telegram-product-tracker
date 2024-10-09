@@ -2,12 +2,13 @@ import { USER_ROLE, type Product } from "@/database/entities";
 import { ProductService, ScraperService, type ScrapeResult } from "@/services";
 import { UrlParser } from "@/utils";
 import { Injectable, Roles } from "@app/common/decorators";
+import { env } from "@app/common/env.validation";
 import { Logger } from "@app/common/logger";
 import { Command } from "@app/common/telegram";
 import { TelegramClient } from "@app/common/telegram/client";
 import { capitalize, isEqualObjects, pluralify } from "@app/common/utils";
 
-const MAX_SCRAPE_FAILURES = 3;
+const { MAX_SCRAPE_FAILURES } = env;
 
 @Injectable()
 @Roles(USER_ROLE.ADMIN)
