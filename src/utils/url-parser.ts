@@ -3,13 +3,15 @@ import { PullAndBearUrlParser } from "./pull-and-bear-url-parser";
 import { ZaraUrlParser } from "./zara-url-parser";
 import type { Product } from "@/database/entities";
 import { OyshoUrlParser } from "./oysho-url-parser";
+import { BershkaUrlParser } from "./bershka.parser";
 
 export namespace UrlParser {
   export function isValidUrl(url: string): boolean {
     return (
       ZaraUrlParser.isValidUrl(url) ||
       PullAndBearUrlParser.isValidUrl(url) ||
-      OyshoUrlParser.isValidUrl(url)
+      OyshoUrlParser.isValidUrl(url) ||
+      BershkaUrlParser.isValidUrl(url)
     );
   }
 
@@ -26,6 +28,10 @@ export namespace UrlParser {
       return MERCHANT.OYSHO;
     }
 
+    if (BershkaUrlParser.isValidUrl(url)) {
+      return MERCHANT.BERSHKA;
+    }
+
     return null;
   }
 
@@ -39,6 +45,8 @@ export namespace UrlParser {
         return PullAndBearUrlParser.extractProductId(url);
       case MERCHANT.OYSHO:
         return OyshoUrlParser.extractProductId(url);
+      case MERCHANT.BERSHKA:
+        return BershkaUrlParser.extractProductId(url);
       default:
         return null;
     }
@@ -52,6 +60,8 @@ export namespace UrlParser {
         return PullAndBearUrlParser.getUrlFromProductId(productId);
       case MERCHANT.OYSHO:
         return OyshoUrlParser.getUrlFromProductId(productId);
+      case MERCHANT.BERSHKA:
+        return BershkaUrlParser.getUrlFromProductId(productId);
       default:
         return null;
     }

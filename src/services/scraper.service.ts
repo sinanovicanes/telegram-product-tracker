@@ -1,5 +1,6 @@
 import { MERCHANT } from "@/enums";
 import { PullAndBearScraper, ZaraScraper } from "@/scrapers";
+import { BershkaScraper } from "@/scrapers/bershka.scraper";
 import { OyshoScraper } from "@/scrapers/oysho.scraper";
 import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
@@ -18,7 +19,7 @@ export class ScraperService {
   private cluster: Cluster<string, ScrapeResult | null | any>;
   private closeClusterTimeout: Timer | null = null;
 
-  private getScraperByUrl(
+  private createScraper(
     page: Page,
     url: string
   ): PullAndBearScraper | ZaraScraper | OyshoScraper | null {
@@ -31,6 +32,8 @@ export class ScraperService {
         return new PullAndBearScraper(page, url);
       case MERCHANT.OYSHO:
         return new OyshoScraper(page, url);
+      case MERCHANT.BERSHKA:
+        return new BershkaScraper(page, url);
       default:
         return null;
     }
@@ -67,7 +70,7 @@ export class ScraperService {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.96 Safari/537.36"
         );
 
-        const scraper = this.getScraperByUrl(page, url);
+        const scraper = this.createScraper(page, url);
 
         if (!scraper) {
           console.error("Scraper not found for url:", url);
