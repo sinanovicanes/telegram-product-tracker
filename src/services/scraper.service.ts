@@ -1,8 +1,10 @@
 import { MERCHANT } from "@/enums";
 import { PullAndBearScraper, ZaraScraper } from "@/scrapers";
+import { OyshoScraper } from "@/scrapers/oysho.scraper";
 import { UrlParser } from "@/utils";
 import { Injectable } from "@app/common/decorators";
 import { env } from "@app/common/env.validation";
+import type { Page } from "puppeteer";
 import { Cluster } from "puppeteer-cluster";
 
 export interface ScrapeResult {
@@ -15,6 +17,24 @@ export interface ScrapeResult {
 export class ScraperService {
   private cluster: Cluster<string, ScrapeResult | null | any>;
   private closeClusterTimeout: Timer | null = null;
+
+  private getScraperByUrl(
+    page: Page,
+    url: string
+  ): PullAndBearScraper | ZaraScraper | OyshoScraper | null {
+    const merchant = UrlParser.getMerchantFromUrl(url);
+
+    switch (merchant) {
+      case MERCHANT.ZARA:
+        return new ZaraScraper(page, url);
+      case MERCHANT.PULL_AND_BEAR:
+        return new PullAndBearScraper(page, url);
+      case MERCHANT.OYSHO:
+        return new OyshoScraper(page, url);
+      default:
+        return null;
+    }
+  }
 
   async initialize() {
     if (this.closeClusterTimeout) {
@@ -47,17 +67,16 @@ export class ScraperService {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.96 Safari/537.36"
         );
 
-        const merchant = UrlParser.getMerchantFromUrl(url);
+        const scraper = this.getScraperByUrl(page, url);
 
-        switch (merchant) {
-          case MERCHANT.ZARA:
-            return await new ZaraScraper(page, url).scrape();
-          case MERCHANT.PULL_AND_BEAR:
-            return await new PullAndBearScraper(page, url).scrape();
-          default:
-            console.error("Invalid url to scrape:", url);
-            return null;
+        if (!scraper) {
+          console.error("Scraper not found for url:", url);
+          return null;
         }
+
+        const result = await scraper.scrape();
+
+        return result;
       } catch (e) {
         console.error(e);
         return null;
