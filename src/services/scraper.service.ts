@@ -55,9 +55,9 @@ export class ScraperService {
         headless: true,
         timeout: 120000,
         args: [
-          "--no-sandbox"
+          "--no-sandbox",
+          "--disable-dev-shm-usage"
           // "--disable-setuid-sandbox",
-          // "--disable-dev-shm-usage",
           // "--disable-gpu"
         ]
       }
