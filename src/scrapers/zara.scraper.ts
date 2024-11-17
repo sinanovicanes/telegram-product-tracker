@@ -9,7 +9,7 @@ export class ZaraScraper extends Scraper {
     const name = await this.getTextContent(".product-detail-info__header-name");
     const price = await this.getTextContent(".money-amount__main");
     const sizes = await this.page.$$eval(
-      ".size-selector-list__item:not(.size-selector-list__item--out-of-stock) .product-size-info__main-label",
+      ".size-selector-sizes__size:not(.size-selector-sizes__size--disabled) .size-selector-sizes-size__label",
       els => els.map(el => el.textContent)
     );
 
