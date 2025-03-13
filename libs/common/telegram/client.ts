@@ -36,13 +36,11 @@ export class TelegramClient extends Telegraf {
     await this.scheduleManager.initialize();
 
     if (env.NODE_ENV === "development") {
-      console.log("Running in development mode");
       return super.launch(() => {
         this.scheduleManager.start();
       });
     }
 
-    console.log("Running in production mode");
     return super.launch(
       {
         webhook: {
