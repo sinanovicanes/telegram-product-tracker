@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { TelegramClientFactory } from "@app/common/telegram";
 import { AuthGuard, NotBotGuard } from "./guards";
 
